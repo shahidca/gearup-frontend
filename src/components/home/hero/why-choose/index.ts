@@ -1,0 +1,1 @@
+export { default as WhyChoose } from "./WhyChoose";

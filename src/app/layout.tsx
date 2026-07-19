@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
-import QueryProvider from "@/providers/query-provider";
-import { ThemeProvider } from "@/providers/theme-provider";
+import Providers from "@/providers";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,12 +27,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
     <body className={`${inter.variable} ${poppins.variable} antialiased`}>
-          <ThemeProvider>
-             <QueryProvider>
-               {children}
-             </QueryProvider>
-          </ThemeProvider>
-   </body>
+         <Providers>
+           {children}
+         </Providers>
+    </body>
     </html>
   );
 }
