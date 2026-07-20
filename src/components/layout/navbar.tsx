@@ -6,9 +6,14 @@ import { motion } from "framer-motion";
 import ThemeToggle from "./theme-toggle";
 import { Container } from "@/components/layout";
 import NavLinks from "./nav-links";
+import GuestMenu from "./navbar/guest-menu";
+import UserMenu from "./navbar/user-menu";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const { data: user, isLoading } = useCurrentUser();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -67,23 +72,14 @@ export default function Navbar() {
             <ThemeToggle />
 
   {/* Desktop Buttons */}
-  <div className="hidden md:flex items-center gap-3">
-
-    <Link
-      href="/login"
-      className="rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-accent"
-    >
-      Login
-    </Link>
-
-    <Link
-      href="/register"
-      className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
-    >
-      Get Started
-    </Link>
-
-  </div>
+ {/* Desktop Auth Area */}
+{isLoading ? (
+  <div className="hidden md:flex h-10 w-28 animate-pulse rounded-xl bg-muted" />
+) : user ? (
+  <UserMenu />
+) : (
+  <GuestMenu />
+)}
 
   {/* Mobile Menu */}
   <MobileMenu />

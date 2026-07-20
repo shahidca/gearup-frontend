@@ -12,46 +12,47 @@ import SectionReveal from "@/components/shared/SectionReveal";
 import ScrollProgress from "@/components/shared/ScrollProgress";
 import ScrollToTop from "@/components/shared/ScrollToTop";
 
+
 export default function HomePage() {
   return (
     <main>
-  
+
       <ScrollProgress />
       <Navbar />
 
-      <Hero/>
+      <Hero />
 
-<SectionReveal>
-  <Categories />
-</SectionReveal>
+      <SectionReveal>
+        <Categories />
+      </SectionReveal>
 
-<SectionReveal>
-  <FeaturedGear />
-</SectionReveal>
+      <SectionReveal>
+        <FeaturedGear />
+      </SectionReveal>
 
-<SectionReveal>
-  <WhyChoose />
-</SectionReveal>
+      <SectionReveal>
+        <WhyChoose />
+      </SectionReveal>
 
-<SectionReveal>
-  <HowItWorks />
-</SectionReveal>
+      <SectionReveal>
+        <HowItWorks />
+      </SectionReveal>
 
-<SectionReveal>
-  <Testimonials />
-</SectionReveal>
+      <SectionReveal>
+        <Testimonials />
+      </SectionReveal>
 
-<SectionReveal>
-  <FAQ />
-</SectionReveal>
+      <SectionReveal>
+        <FAQ />
+      </SectionReveal>
 
-<SectionReveal>
-  <CTA />
-</SectionReveal>
+      <SectionReveal>
+        <CTA />
+      </SectionReveal>
 
-            <Footer />
+      <Footer />
 
-             <ScrollToTop />
+      <ScrollToTop />
     </main>
   );
 }
