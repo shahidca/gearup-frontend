@@ -29,7 +29,7 @@ export default function ReviewsSection({
 
       <ReviewForm gear={gear} />
 
-      <div className="mt-10 space-y-6">
+      <div className="space-y-6">
 
         {gear.reviews.length === 0 ? (
           <div className="rounded-xl border border-dashed py-12 text-center text-muted-foreground">

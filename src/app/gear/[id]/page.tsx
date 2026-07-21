@@ -3,13 +3,14 @@
 import { use } from "react";
 
 import { useSingleGear } from "@/hooks/useSingleGear";
-
+import ReviewsSection from "@/components/gear/reviews/ReviewsSection";
 import GearGallery from "@/components/gear/details/GearGallery";
 import GearInfo from "@/components/gear/details/GearInfo";
 import GearDescription from "@/components/gear/details/GearDescription";
 import GearSpecifications from "@/components/gear/details/GearSpecifications";
 import GearProvider from "@/components/gear/details/GearProvider";
 import RentCard from "@/components/gear/details/RentCard";
+import RelatedGear from "@/components/gear/related/RelatedGear";
 
 export default function GearDetailsPage({
   params,
@@ -73,6 +74,19 @@ export default function GearDetailsPage({
         <GearProvider gear={gear} />
 
       </section>
+
+      {/* =================  Reviews ================= */}
+
+      <section className="mt-10">
+        <ReviewsSection gear={gear} />
+      </section>
+
+       {/* ================= Related Gear ================= */}
+
+      <RelatedGear
+        categoryId={gear.category.id}
+        currentGearId={gear.id}
+      />
 
     </main>
   );
