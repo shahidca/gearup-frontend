@@ -4,9 +4,17 @@ import { motion } from "framer-motion";
 
 import { Container } from "@/components/layout";
 import GearCard from "./GearCard";
-import { featuredGear } from "./gear-data";
+
+import { useGear } from "@/hooks/useGear";
 
 export default function FeaturedGear() {
+  const { data, isLoading } = useGear({
+    limit: 8,
+    page: 1,
+  });
+
+  const gears = data?.data ?? [];
+
   return (
     <section className="py-24">
       <Container>
@@ -30,23 +38,29 @@ export default function FeaturedGear() {
           </p>
         </motion.div>
 
-        {/* Cards */}
-        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
-          {featuredGear.map((gear, index) => (
-            <motion.div
-              key={gear.id}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{
-                delay: index * 0.1,
-                duration: 0.5,
-              }}
-            >
-              <GearCard {...gear} />
-            </motion.div>
-          ))}
-        </div>
+        {/* Loading */}
+        {isLoading ? (
+          <div className="py-20 text-center text-muted-foreground">
+            Loading gear...
+          </div>
+        ) : (
+          <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
+            {gears.map((gear, index) => (
+              <motion.div
+                key={gear.id}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{
+                  delay: index * 0.1,
+                  duration: 0.5,
+                }}
+              >
+                <GearCard gear={gear} />
+              </motion.div>
+            ))}
+          </div>
+        )}
       </Container>
     </section>
   );

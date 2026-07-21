@@ -5,12 +5,14 @@ import { ArrowRight } from "lucide-react";
 
 type CategoryCardProps = {
   title: string;
-  count: string;
+  description?: string;
+  count: number;
   icon: React.ElementType;
 };
 
 export default function CategoryCard({
   title,
+  description,
   count,
   icon: Icon,
 }: CategoryCardProps) {
@@ -30,17 +32,16 @@ export default function CategoryCard({
         <Icon className="h-8 w-8 text-primary transition-colors group-hover:text-primary-foreground" />
       </div>
 
-      {/* Title */}
-      <h3 className="text-xl font-bold">
-        {title}
-      </h3>
+      <h3 className="text-xl font-bold">{title}</h3>
 
-      {/* Count */}
-      <p className="mt-2 text-sm text-muted-foreground">
-        {count}
+      <p className="mt-2 min-h-10 text-sm text-muted-foreground">
+        {description || "Premium rental equipment"}
       </p>
 
-      {/* Explore */}
+      <p className="mt-2 font-medium text-primary">
+        {count} Items
+      </p>
+
       <div className="mt-6 flex items-center gap-2 font-medium text-primary">
         <span>Explore</span>
 
