@@ -6,19 +6,19 @@ import {
   ArrowRight,
   Calendar,
   CreditCard,
-  User,
+  Package,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-interface ProviderRecentOrdersProps {
-  orders: any[];
+interface CustomerRecentRentalsProps {
+  rentals: any[];
 }
 
-export default function ProviderRecentOrders({
-  orders,
-}: ProviderRecentOrdersProps) {
+export default function CustomerRecentRentals({
+  rentals,
+}: CustomerRecentRentalsProps) {
   return (
     <section className="rounded-2xl border bg-card p-6 shadow-sm">
 
@@ -29,16 +29,16 @@ export default function ProviderRecentOrders({
         <div>
 
           <h2 className="text-2xl font-bold">
-            Recent Orders
+            Recent Rentals
           </h2>
 
           <p className="mt-1 text-sm text-muted-foreground">
-            Latest rental requests from customers.
+            Your latest rental activity.
           </p>
 
         </div>
 
-        <Link href="/provider/orders">
+        <Link href="/customer/rentals">
           <Button
             variant="outline"
             size="sm"
@@ -50,27 +50,29 @@ export default function ProviderRecentOrders({
 
       </div>
 
-      {/* Empty */}
+      {/* Empty State */}
 
-      {orders.length === 0 ? (
+      {rentals.length === 0 ? (
         <div className="rounded-2xl border border-dashed py-16 text-center">
 
+          <Package className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+
           <h3 className="text-lg font-semibold">
-            No Recent Orders
+            No Rentals Yet
           </h3>
 
           <p className="mt-2 text-sm text-muted-foreground">
-            New customer rentals will appear here.
+            Your rental history will appear here.
           </p>
 
         </div>
       ) : (
         <div className="space-y-5">
 
-          {orders.map((order: any) => (
+          {rentals.map((rental: any) => (
 
             <div
-              key={order.id}
+              key={rental.id}
               className="
                 rounded-2xl
                 border
@@ -92,37 +94,37 @@ export default function ProviderRecentOrders({
                   <div className="flex items-center gap-3">
 
                     <div className="rounded-full bg-primary/10 p-3 text-primary">
-                      <User className="h-5 w-5" />
+                      <Package className="h-5 w-5" />
                     </div>
 
                     <div>
 
                       <h3 className="font-semibold">
-                        {order.customer?.name}
+                        {rental.rentalItems?.[0]?.gearItem?.name ??
+                          "Rental Item"}
                       </h3>
 
                       <p className="text-sm text-muted-foreground">
-                        Customer
+                        Rental Order
                       </p>
 
                     </div>
 
                   </div>
 
-                  <div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
 
-                    <p className="text-sm font-medium">
-                      Gear Items
-                    </p>
+                    <Calendar className="h-4 w-4" />
 
-                    <p className="text-sm text-muted-foreground">
-                      {order.rentalItems
-                        ?.map(
-                          (item: any) =>
-                            item.gearItem?.name
-                        )
-                        .join(", ")}
-                    </p>
+                    {new Date(
+                      rental.startDate
+                    ).toLocaleDateString()}
+                    {" "}
+                    -
+                    {" "}
+                    {new Date(
+                      rental.endDate
+                    ).toLocaleDateString()}
 
                   </div>
 
@@ -135,29 +137,19 @@ export default function ProviderRecentOrders({
                   <div className="flex flex-wrap justify-start gap-2 lg:justify-end">
 
                     <Badge>
-                      {order.status}
+                      {rental.status}
                     </Badge>
 
                     <Badge
                       variant={
-                        order.payment
+                        rental.payment
                           ? "default"
                           : "secondary"
                       }
                     >
-                      {order.payment?.status ??
+                      {rental.payment?.status ??
                         "UNPAID"}
                     </Badge>
-
-                  </div>
-
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground lg:justify-end">
-
-                    <Calendar className="h-4 w-4" />
-
-                    {new Date(
-                      order.createdAt
-                    ).toLocaleDateString()}
 
                   </div>
 
@@ -167,7 +159,7 @@ export default function ProviderRecentOrders({
 
                     ৳
                     {Number(
-                      order.payment?.amount ?? 0
+                      rental.totalAmount
                     ).toLocaleString()}
 
                   </div>

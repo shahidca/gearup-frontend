@@ -9,9 +9,11 @@ import {
   getProviderDashboard,
   getProviderGear,
   getProviderOrders,
+  getProviderProfile,
   getSingleProviderGear,
   updateProviderGear,
   updateProviderOrder,
+  updateProviderProfile,
   type TProviderGearQuery,
 } from "@/services/provider.service";
 
@@ -192,6 +194,56 @@ export const useUpdateProviderOrder =
               "provider-orders",
             ],
           }
+        );
+      },
+    });
+  };
+
+  /* ===========================
+   Profile
+=========================== */
+
+export const useProviderProfile =
+  () => {
+    return useQuery({
+      queryKey: [
+        "provider-profile",
+      ],
+      queryFn:
+        getProviderProfile,
+    });
+  };
+
+export const useUpdateProviderProfile =
+  () => {
+    const queryClient =
+      useQueryClient();
+
+    return useMutation({
+      mutationFn:
+        updateProviderProfile,
+
+      onSuccess: () => {
+        toast.success(
+          "Profile updated successfully"
+        );
+
+        queryClient.invalidateQueries(
+          {
+            queryKey: [
+              "provider-profile",
+            ],
+          }
+        );
+      },
+
+      onError: (
+        error: any
+      ) => {
+        toast.error(
+          error?.response?.data
+            ?.message ??
+            "Failed to update profile."
         );
       },
     });

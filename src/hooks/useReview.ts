@@ -1,0 +1,185 @@
+"use client";
+
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import toast from "react-hot-toast";
+
+import {
+  createReview,
+  deleteReview,
+  getGearReviews,
+  getMyReviews,
+  getSingleReview,
+  updateReview,
+  type TCreateReview,
+  type TUpdateReview,
+} from "@/services/review.service";
+
+interface ErrorResponse {
+  message: string;
+}
+
+/* ===========================
+   My Reviews
+=========================== */
+
+export const useMyReviews = () => {
+  return useQuery({
+    queryKey: ["my-reviews"],
+    queryFn: getMyReviews,
+  });
+};
+
+/* ===========================
+   Single Review
+=========================== */
+
+export const useSingleReview = (
+  id: string
+) => {
+  return useQuery({
+    queryKey: ["review", id],
+    queryFn: () =>
+      getSingleReview(id),
+    enabled: !!id,
+  });
+};
+
+/* ===========================
+   Gear Reviews
+=========================== */
+
+export const useGearReviews = (
+  gearId: string
+) => {
+  return useQuery({
+    queryKey: [
+      "gear-reviews",
+      gearId,
+    ],
+    queryFn: () =>
+      getGearReviews(gearId),
+    enabled: !!gearId,
+  });
+};
+
+/* ===========================
+   Create Review
+=========================== */
+
+export const useCreateReview = () => {
+  const queryClient =
+    useQueryClient();
+
+  return useMutation({
+    mutationFn: (
+      payload: TCreateReview
+    ) => createReview(payload),
+
+    onSuccess: () => {
+      toast.success(
+        "Review submitted successfully."
+      );
+
+      queryClient.invalidateQueries({
+        queryKey: ["my-reviews"],
+      });
+    },
+
+    onError: (
+      error: AxiosError<ErrorResponse>
+    ) => {
+      toast.error(
+        error.response?.data?.message ??
+          "Failed to submit review."
+      );
+    },
+  });
+};
+
+/* ===========================
+   Update Review
+=========================== */
+
+export const useUpdateReview = () => {
+  const queryClient =
+    useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: TUpdateReview;
+    }) =>
+      updateReview(id, payload),
+
+    onSuccess: (
+      _,
+      variables
+    ) => {
+      toast.success(
+        "Review updated successfully."
+      );
+
+      queryClient.invalidateQueries({
+        queryKey: ["my-reviews"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [
+          "review",
+          variables.id,
+        ],
+      });
+    },
+
+    onError: (
+      error: AxiosError<ErrorResponse>
+    ) => {
+      toast.error(
+        error.response?.data?.message ??
+          "Failed to update review."
+      );
+    },
+  });
+};
+
+/* ===========================
+   Delete Review
+=========================== */
+
+export const useDeleteReview = () => {
+  const queryClient =
+    useQueryClient();
+
+  return useMutation({
+    mutationFn: (
+      id: string
+    ) => deleteReview(id),
+
+    onSuccess: () => {
+      toast.success(
+        "Review deleted successfully."
+      );
+
+      queryClient.invalidateQueries({
+        queryKey: ["my-reviews"],
+      });
+    },
+
+    onError: (
+      error: AxiosError<ErrorResponse>
+    ) => {
+      toast.error(
+        error.response?.data?.message ??
+          "Failed to delete review."
+      );
+    },
+  });
+};

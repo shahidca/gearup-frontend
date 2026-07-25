@@ -119,3 +119,35 @@ export const getAdminRentals =
 
     return response.data.data;
   };
+
+  /* ===========================
+   Profile
+=========================== */
+
+export const getAdminProfile =
+  async () => {
+    const response =
+      await api.get(
+        "/admin/profile"
+      );
+
+    return response.data.data;
+  };
+
+export const updateAdminProfile =
+  async (
+    payload: {
+      name?: string;
+      phone?: string;
+      address?: string;
+      profileImage?: string;
+    }
+  ) => {
+    const response =
+      await api.patch(
+        "/admin/profile",
+        payload
+      );
+
+    return response.data.data;
+  };

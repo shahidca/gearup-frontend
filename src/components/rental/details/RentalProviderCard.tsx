@@ -2,8 +2,10 @@
 
 import { Mail, Phone, MapPin, User } from "lucide-react";
 
+import { TRental } from "@/types/rental";
+
 interface RentalProviderCardProps {
-  rental: any;
+  rental: TRental;
 }
 
 export default function RentalProviderCard({
@@ -13,26 +15,32 @@ export default function RentalProviderCard({
     rental.rentalItems?.[0]?.gearItem?.provider;
 
   return (
-    <div className="rounded-3xl border bg-card p-6 shadow-sm">
+    <section className="rounded-3xl border bg-card p-6 shadow-sm">
 
-      {/* ================= Header ================= */}
+      {/* Header */}
 
-      <h2 className="mb-6 text-2xl font-bold">
-        Provider Information
-      </h2>
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold">
+          Provider Information
+        </h2>
 
-      {/* ================= Provider ================= */}
+        <p className="text-sm text-muted-foreground">
+          Contact details of the equipment provider.
+        </p>
+      </div>
 
-      <div className="space-y-5">
+      {/* Provider */}
 
-        <div className="flex items-center gap-3">
+      <div className="space-y-6">
 
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
-            <User className="h-7 w-7 text-primary" />
+        <div className="flex items-center gap-4">
+
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+            <User className="h-8 w-8 text-primary" />
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold">
+            <h3 className="text-xl font-semibold">
               {provider?.name ?? "Unknown Provider"}
             </h3>
 
@@ -43,35 +51,53 @@ export default function RentalProviderCard({
 
         </div>
 
-        <div className="space-y-4">
+        <div className="grid gap-5 md:grid-cols-2">
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 rounded-xl border p-4">
 
-            <Mail className="h-5 w-5 text-primary" />
+            <Mail className="h-5 w-5 shrink-0 text-primary" />
 
-            <span>
-              {provider?.email ?? "N/A"}
-            </span>
+            <div>
+              <p className="text-xs text-muted-foreground">
+                Email
+              </p>
 
-          </div>
-
-          <div className="flex items-center gap-3">
-
-            <Phone className="h-5 w-5 text-primary" />
-
-            <span>
-              {provider?.phone ?? "Not Available"}
-            </span>
+              <p className="font-medium">
+                {provider?.email ?? "Not Available"}
+              </p>
+            </div>
 
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 rounded-xl border p-4">
 
-            <MapPin className="h-5 w-5 text-primary" />
+            <Phone className="h-5 w-5 shrink-0 text-primary" />
 
-            <span>
-              {provider?.address ?? "Address Not Available"}
-            </span>
+            <div>
+              <p className="text-xs text-muted-foreground">
+                Phone
+              </p>
+
+              <p className="font-medium">
+                {provider?.phone ?? "Not Available"}
+              </p>
+            </div>
+
+          </div>
+
+          <div className="flex items-center gap-3 rounded-xl border p-4 md:col-span-2">
+
+            <MapPin className="h-5 w-5 shrink-0 text-primary" />
+
+            <div>
+              <p className="text-xs text-muted-foreground">
+                Address
+              </p>
+
+              <p className="font-medium">
+                {provider?.address ?? "Address Not Available"}
+              </p>
+            </div>
 
           </div>
 
@@ -79,6 +105,6 @@ export default function RentalProviderCard({
 
       </div>
 
-    </div>
+    </section>
   );
 }

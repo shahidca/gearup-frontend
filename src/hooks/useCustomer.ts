@@ -18,10 +18,20 @@ export function useCustomerDashboard() {
   });
 }
 
-export function useCustomerRentals() {
+export type TCustomerRentalQuery = {
+  page?: number;
+  limit?: number;
+  searchTerm?: string;
+  status?: string;
+};
+
+export function useCustomerRentals(
+  query?: TCustomerRentalQuery
+) {
   return useQuery({
-    queryKey: ["customer-rentals"],
-    queryFn: getCustomerRentals,
+    queryKey: ["customer-rentals", query],
+    queryFn: () =>
+      getCustomerRentals(query),
   });
 }
 

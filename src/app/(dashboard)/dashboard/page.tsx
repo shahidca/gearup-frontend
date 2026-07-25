@@ -1,54 +1,51 @@
 "use client";
 
-import {
-  useAdminGear,
-  useAdminRentals,
-  useAdminUsers,
-} from "@/hooks/useAdmin";
+import AdminDashboardSkeleton from "@/components/dashboard/admin/AdminDashboardSkeleton";
+import AdminRecentRentals from "@/components/dashboard/admin/AdminRecentRentals";
+import AdminStats from "@/components/dashboard/admin/AdminStats";
+
+import { useAdminDashboard } from "@/hooks/useAdminDashboard";
 
 export default function AdminDashboard() {
-  const { data: users } = useAdminUsers();
+  const {
+    data,
+    isLoading,
+    isError,
+  } = useAdminDashboard();
 
-  const { data: gear } = useAdminGear();
+  if (isLoading) {
+    return <AdminDashboardSkeleton />;
+  }
 
-  const { data: rentals } =
-    useAdminRentals();
+  if (isError || !data) {
+    return (
+      <div className="flex h-[70vh] items-center justify-center">
+        Failed to load dashboard.
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-8">
+    <main className="space-y-8">
 
-      <h1 className="text-3xl font-bold">
-        Admin Dashboard
-      </h1>
+      <section>
 
-      <div className="grid gap-6 md:grid-cols-3">
+        <h1 className="text-3xl font-bold">
+          Admin Dashboard
+        </h1>
 
-        <div className="rounded-2xl border p-6">
-          <h2>Total Users</h2>
+        <p className="mt-2 text-muted-foreground">
+          Overview of the GearUp platform.
+        </p>
 
-          <p className="text-4xl font-bold">
-            {users?.length ?? 0}
-          </p>
-        </div>
+      </section>
 
-        <div className="rounded-2xl border p-6">
-          <h2>Total Gear</h2>
+      <AdminStats stats={data} />
 
-          <p className="text-4xl font-bold">
-            {gear?.length ?? 0}
-          </p>
-        </div>
+      <AdminRecentRentals
+        rentals={data.recentRentals}
+      />
 
-        <div className="rounded-2xl border p-6">
-          <h2>Total Rentals</h2>
-
-          <p className="text-4xl font-bold">
-            {rentals?.length ?? 0}
-          </p>
-        </div>
-
-      </div>
-
-    </div>
+    </main>
   );
 }

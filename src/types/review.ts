@@ -1,20 +1,19 @@
-export interface TReviewUser {
+export interface TReviewCustomer {
   id: string;
   name: string;
-  email: string;
+  email?: string;
+  profileImage?: string | null;
 }
 
 export interface TReviewCategory {
   id: string;
   name: string;
-  slug: string;
 }
 
 export interface TReviewGear {
   id: string;
   name: string;
   images: string[];
-
   category?: TReviewCategory;
 }
 
@@ -23,13 +22,25 @@ export interface TReview {
 
   rating: number;
 
-  comment: string;
+  comment?: string | null;
+
+  customerId: string;
+
+  gearItemId: string;
 
   createdAt: string;
 
   updatedAt: string;
 
-  user: TReviewUser;
+  customer?: TReviewCustomer;
 
-  gearItem: TReviewGear;
+  gearItem?: TReviewGear;
+}
+
+export interface TGearReviewsResponse {
+  averageRating: number;
+
+  totalReviews: number;
+
+  reviews: TReview[];
 }

@@ -14,6 +14,17 @@ export default function RentalActions({
 }: RentalActionsProps) {
   const { mutate, isPending } = useCancelRental();
 
+  // =============================
+  // Current Gear
+  // =============================
+
+  const gear =
+    rental.rentalItems?.[0]?.gearItem;
+
+  // =============================
+  // Action Permissions
+  // =============================
+
   const canCancel =
     rental.status === "PLACED";
 
@@ -22,6 +33,9 @@ export default function RentalActions({
 
   const canDownload =
     rental.payment?.status === "COMPLETED";
+
+  const canReview =
+    rental.status === "RETURNED";
 
   return (
     <div className="rounded-3xl border bg-card p-6 shadow-sm">
@@ -70,6 +84,18 @@ export default function RentalActions({
           >
             Download Invoice
           </Button>
+        )}
+
+        {/* ================= Leave Review ================= */}
+
+        {canReview && gear && (
+          <Link
+            href={`/customer/reviews/new/${gear.id}`}
+          >
+            <Button className="w-full">
+              Leave Review
+            </Button>
+          </Link>
         )}
 
       </div>

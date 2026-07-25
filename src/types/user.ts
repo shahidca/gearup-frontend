@@ -1,0 +1,30 @@
+export type TUserRole =
+  | "CUSTOMER"
+  | "PROVIDER"
+  | "ADMIN";
+
+export type TUserStatus =
+  | "ACTIVE"
+  | "SUSPENDED";
+
+export interface TUser {
+  id: string;
+
+  name: string;
+
+  email: string;
+
+  phone?: string | null;
+
+  address?: string | null;
+
+  profileImage?: string | null;
+
+  role: TUserRole;
+
+  status: TUserStatus;
+
+  createdAt: string;
+
+  updatedAt?: string;
+}

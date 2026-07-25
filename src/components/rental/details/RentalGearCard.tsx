@@ -1,10 +1,10 @@
 "use client";
-
+import { TRental } from "@/types/rental";
 import Image from "next/image";
 import { Package, ShieldCheck, Tag } from "lucide-react";
 
 interface RentalGearCardProps {
-  rental: any;
+  rental: TRental;
 }
 
 export default function RentalGearCard({

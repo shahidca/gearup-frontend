@@ -1,58 +1,112 @@
 "use client";
+
+import { useState } from "react";
+
 import CustomerRentalCard from "@/components/dashboard/customer/CustomerRentalCard";
+import CustomerRentalSkeleton from "@/components/dashboard/customer/CustomerRentalSkeleton";
+
+
+import Pagination from "@/components/shared/Pagination";
+
 import { useCustomerRentals } from "@/hooks/useCustomer";
+import CustomerRentalSearch from "@/components/dashboard/customer/CustomerRentalSearch";
+import CustomerRentalFilters from "@/components/dashboard/customer/CustomerRentalFilters";
+import EmptyRentals from "@/components/dashboard/customer/EmptyRentals";
 
 export default function CustomerRentalsPage() {
+  const [page, setPage] = useState(1);
+
+  const [searchTerm, setSearchTerm] =
+    useState("");
+
+  const [status, setStatus] =
+    useState("ALL");
+
   const {
     data,
     isLoading,
     isError,
-  } = useCustomerRentals();
+  } = useCustomerRentals({
+    page,
+    limit: 9,
+    searchTerm,
+    status:
+      status === "ALL"
+        ? undefined
+        : status,
+  });
 
   if (isLoading) {
-    return (
-      <div className="py-20 text-center">
-        Loading rentals...
-      </div>
-    );
+    return <CustomerRentalSkeleton />;
   }
 
   if (isError) {
     return (
-      <div className="py-20 text-center">
+      <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-6">
         Failed to load rentals.
       </div>
     );
   }
 
-  if (!data?.data?.length) {
-    return (
-      <div className="py-20 text-center">
-        No rentals found.
-      </div>
-    );
-  }
+  const rentals = data?.data ?? [];
+
+  const meta = data?.meta;
 
   return (
-    <div className="space-y-8">
-      <div>
+    <main className="space-y-8">
+
+      <section>
+
         <h1 className="text-3xl font-bold">
           My Rentals
         </h1>
 
-        <p className="text-muted-foreground">
-          View all your rental orders.
+        <p className="mt-2 text-muted-foreground">
+          Manage and track all your rental orders.
         </p>
+
+      </section>
+
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+
+        <CustomerRentalSearch
+          value={searchTerm}
+          onChange={setSearchTerm}
+        />
+
+        <CustomerRentalFilters
+          status={status}
+          onStatusChange={(value) =>
+            setStatus(value ?? "ALL")
+          }
+        />
+
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {data.data.map((rental: any) => (
-          <CustomerRentalCard
-            key={rental.id}
-            rental={rental}
+      {rentals.length === 0 ? (
+        <EmptyRentals />
+      ) : (
+        <>
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+
+            {rentals.map((rental: any) => (
+              <CustomerRentalCard
+                key={rental.id}
+                rental={rental}
+              />
+            ))}
+
+          </div>
+
+          <Pagination
+            currentPage={meta?.page || 1}
+            totalPage={meta?.totalPage || 1}
+            onPageChange={setPage}
           />
-        ))}
-      </div>
-    </div>
+
+        </>
+      )}
+
+    </main>
   );
 }

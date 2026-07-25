@@ -1,27 +1,27 @@
 "use client";
 
-import ProviderProfileCard from "@/components/dashboard/provider/ProviderProfileCard";
-import ProviderProfileForm from "@/components/dashboard/provider/ProviderProfileForm";
-import ProviderProfileSkeleton from "@/components/dashboard/provider/ProviderProfileSkeleton";
+import AdminProfileCard from "@/components/dashboard/admin/AdminProfileCard";
+import AdminProfileForm from "@/components/dashboard/admin/AdminProfileForm";
+import AdminProfileSkeleton from "@/components/dashboard/admin/AdminProfileSkeleton";
 
 
 import {
-  useProviderProfile,
-  useUpdateProviderProfile,
-} from "@/hooks/useProvider";
+  useAdminProfile,
+  useUpdateAdminProfile,
+} from "@/hooks/useAdmin";
 
-export default function ProviderProfilePage() {
+export default function AdminProfilePage() {
   const {
     data,
     isLoading,
     isError,
-  } = useProviderProfile();
+  } = useAdminProfile();
 
   const updateProfile =
-    useUpdateProviderProfile();
+    useUpdateAdminProfile();
 
   if (isLoading) {
-    return <ProviderProfileSkeleton />;
+    return <AdminProfileSkeleton />;
   }
 
   if (isError || !data) {
@@ -38,24 +38,24 @@ export default function ProviderProfilePage() {
       <section>
 
         <h1 className="text-3xl font-bold">
-          Provider Profile
+          Admin Profile
         </h1>
 
         <p className="mt-2 text-muted-foreground">
-          Manage your business profile.
+          Manage your administrator account.
         </p>
 
       </section>
 
       <div className="grid gap-8 lg:grid-cols-3">
 
-        <ProviderProfileCard
+        <AdminProfileCard
           profile={data}
         />
 
         <div className="lg:col-span-2">
 
-          <ProviderProfileForm
+          <AdminProfileForm
             profile={data}
             updateProfile={updateProfile}
           />
