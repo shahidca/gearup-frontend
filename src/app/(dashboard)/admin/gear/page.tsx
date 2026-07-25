@@ -1,131 +1,77 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { useAdminRentals } from "@/hooks/useAdmin";
+import { useState } from "react";
 
-export default function AdminRentalsPage() {
+import { useAdminGear } from "@/hooks/useAdminGear";
+
+import AdminGearTable from "@/components/dashboard/admin/gear/AdminGearTable";
+import AdminGearFilters from "@/components/dashboard/admin/gear/AdminGearFilters";
+import AdminGearSkeleton from "@/components/dashboard/admin/gear/AdminGearSkeleton";
+import EmptyGearState from "@/components/dashboard/admin/gear/EmptyGearState";
+
+export default function AdminGearPage() {
+  const [searchTerm, setSearchTerm] = useState("");
+
   const {
-    data,
+    data: gear = [],
     isLoading,
     isError,
-  } = useAdminRentals();
+  } = useAdminGear();
 
   if (isLoading) {
-    return (
-      <div className="py-20">
-        Loading rentals...
-      </div>
-    );
+    return <AdminGearSkeleton />;
   }
 
   if (isError) {
     return (
-      <div className="py-20">
-        Failed to load rentals.
+      <div className="flex h-[70vh] items-center justify-center">
+        Failed to load gear.
       </div>
     );
   }
 
-  return (
-    <div className="space-y-8">
+  const filteredGear = gear.filter((item: any) => {
+    const keyword = searchTerm.toLowerCase();
 
-      <div>
+    return (
+      item.name.toLowerCase().includes(keyword) ||
+      item.provider?.name
+        ?.toLowerCase()
+        .includes(keyword) ||
+      item.category?.name
+        ?.toLowerCase()
+        .includes(keyword)
+    );
+  });
+
+  return (
+    <main className="space-y-8">
+
+      <section>
+
         <h1 className="text-3xl font-bold">
-          Rental Management
+          Gear Management
         </h1>
 
-        <p className="text-muted-foreground">
-          View all rental orders.
+        <p className="mt-2 text-muted-foreground">
+          View and manage every gear item in the platform.
         </p>
-      </div>
 
-      <div className="overflow-hidden rounded-2xl border">
+      </section>
 
-        <table className="w-full">
+      <AdminGearFilters
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+      />
 
-          <thead className="bg-muted">
+      {filteredGear.length ? (
+        <AdminGearTable
+          gear={filteredGear}
+        />
+      ) : (
+        <EmptyGearState />
+      )}
 
-            <tr>
-
-              <th className="p-4 text-left">
-                Customer
-              </th>
-
-              <th>Gear</th>
-
-              <th>Status</th>
-
-              <th>Payment</th>
-
-              <th>Total</th>
-
-            </tr>
-
-          </thead>
-
-          <tbody>
-
-            {data?.map((rental: any) => {
-
-              const item = rental.rentalItems[0];
-
-              return (
-
-                <tr
-                  key={rental.id}
-                  className="border-b"
-                >
-
-                  <td className="p-4">
-                    {rental.customer.name}
-                  </td>
-
-                  <td>
-                    {item?.gearItem.name}
-                  </td>
-
-                  <td>
-
-                    <Badge>
-                      {rental.status}
-                    </Badge>
-
-                  </td>
-
-                  <td>
-
-                    <Badge
-                      variant={
-                        rental.payment
-                          ? "default"
-                          : "secondary"
-                      }
-                    >
-                      {rental.payment
-                        ? rental.payment.status
-                        : "UNPAID"}
-                    </Badge>
-
-                  </td>
-
-                  <td>
-                    $
-                    {Number(
-                      rental.totalAmount
-                    ).toFixed(2)}
-                  </td>
-
-                </tr>
-
-              );
-            })}
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-    </div>
+    </main>
   );
 }

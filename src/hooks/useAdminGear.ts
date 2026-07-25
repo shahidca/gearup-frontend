@@ -6,78 +6,115 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 
+import toast from "react-hot-toast";
+
 import {
-  deleteGear,
-  getAllGear,
-  getSingleGear,
-  TGearQuery,
-  updateGear,
-} from "@/services/admin-gear.service";
+  getAdminGear,
+  getSingleAdminGear,
+  updateAdminGear,
+  deleteAdminGear,
+  TAdminGearQuery,
+} from "@/services/admin.service";
 
-import { toast } from "sonner";
-
-export const useAdminGear = (
-  query: TGearQuery
-) => {
+export function useAdminGear(
+  query?: TAdminGearQuery
+) {
   return useQuery({
     queryKey: ["admin-gear", query],
-    queryFn: () => getAllGear(query),
+    queryFn: () => getAdminGear(query),
   });
-};
+}
 
-export const useSingleGear = (
-  gearId: string
-) => {
+export function useSingleAdminGear(
+  id: string
+) {
   return useQuery({
-    queryKey: ["admin-gear", gearId],
-    queryFn: () => getSingleGear(gearId),
-    enabled: !!gearId,
+    queryKey: ["admin-gear", id],
+    queryFn: () =>
+      getSingleAdminGear(id),
+    enabled: !!id,
   });
-};
+}
 
-export const useUpdateGear = () => {
-  const queryClient = useQueryClient();
+export function useUpdateAdminGear() {
+  const queryClient =
+    useQueryClient();
 
   return useMutation({
     mutationFn: ({
-      gearId,
+      id,
       payload,
     }: {
-      gearId: string;
-      payload: Record<string, unknown>;
-    }) => updateGear(gearId, payload),
+      id: string;
+      payload: Record<
+        string,
+        unknown
+      >;
+    }) =>
+      updateAdminGear(
+        id,
+        payload
+      ),
 
     onSuccess: () => {
-      toast.success("Gear updated successfully");
+      toast.success(
+        "Gear updated successfully."
+      );
 
       queryClient.invalidateQueries({
         queryKey: ["admin-gear"],
       });
+
+      queryClient.invalidateQueries({
+        queryKey: [
+          "admin-dashboard",
+        ],
+      });
     },
 
-    onError: () => {
-      toast.error("Failed to update gear");
+    onError: (
+      error: any
+    ) => {
+      toast.error(
+        error?.response?.data
+          ?.message ??
+          "Failed to update gear."
+      );
     },
   });
-};
+}
 
-export const useDeleteGear = () => {
-  const queryClient = useQueryClient();
+export function useDeleteAdminGear() {
+  const queryClient =
+    useQueryClient();
 
   return useMutation({
-    mutationFn: (gearId: string) =>
-      deleteGear(gearId),
+    mutationFn: deleteAdminGear,
 
     onSuccess: () => {
-      toast.success("Gear deleted successfully");
+      toast.success(
+        "Gear deleted successfully."
+      );
 
       queryClient.invalidateQueries({
         queryKey: ["admin-gear"],
       });
+
+      queryClient.invalidateQueries({
+        queryKey: [
+          "admin-dashboard",
+        ],
+      });
     },
 
-    onError: () => {
-      toast.error("Failed to delete gear");
+    onError: (
+      error: any
+    ) => {
+      toast.error(
+        error?.response?.data
+          ?.message ??
+          "Failed to delete gear."
+      );
     },
   });
-};
+}

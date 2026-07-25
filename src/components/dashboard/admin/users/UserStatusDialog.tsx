@@ -1,96 +1,116 @@
 "use client";
 
+import { useState } from "react";
+
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 
 import { Button } from "@/components/ui/button";
 
-import { useUpdateUserStatus } from "@/hooks/useAdminUsers";
+import { useUpdateAdminUserStatus } from "@/hooks/useAdminUsers";
 
 interface UserStatusDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-
-  userId: string;
-
-  currentStatus: string;
+  user: {
+    id: string;
+    name: string;
+    status: string;
+  };
 }
 
 export default function UserStatusDialog({
-  open,
-  onOpenChange,
-  userId,
-  currentStatus,
+  user,
 }: UserStatusDialogProps) {
+  const [open, setOpen] = useState(false);
+
   const { mutate, isPending } =
-    useUpdateUserStatus();
+    useUpdateAdminUserStatus();
 
   const nextStatus =
-    currentStatus === "ACTIVE"
+    user.status === "ACTIVE"
       ? "SUSPENDED"
       : "ACTIVE";
 
   const handleConfirm = () => {
     mutate(
       {
-        userId,
+        id: user.id,
         status: nextStatus,
       },
       {
         onSuccess: () => {
-          onOpenChange(false);
+          setOpen(false);
         },
       }
     );
   };
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={onOpenChange}
-    >
-      <DialogContent>
+    <>
+      <Button
+        variant={
+          user.status === "ACTIVE"
+            ? "destructive"
+            : "default"
+        }
+        size="sm"
+        onClick={() => setOpen(true)}
+      >
+        {user.status === "ACTIVE"
+          ? "Suspend"
+          : "Activate"}
+      </Button>
 
-        <DialogHeader>
+      <Dialog
+        open={open}
+        onOpenChange={setOpen}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {nextStatus === "SUSPENDED"
+                ? "Suspend User"
+                : "Activate User"}
+            </DialogTitle>
 
-          <DialogTitle>
-            {nextStatus === "SUSPENDED"
-              ? "Suspend User"
-              : "Activate User"}
-          </DialogTitle>
+            <DialogDescription>
+              Are you sure you want to{" "}
+              <strong>
+                {nextStatus.toLowerCase()}
+              </strong>{" "}
+              <strong>{user.name}</strong>?
+            </DialogDescription>
+          </DialogHeader>
 
-          <DialogDescription>
-            Are you sure you want to{" "}
-            <strong>
-              {nextStatus.toLowerCase()}
-            </strong>{" "}
-            this user?
-          </DialogDescription>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() =>
+                setOpen(false)
+              }
+            >
+              Cancel
+            </Button>
 
-        </DialogHeader>
-
-        <DialogFooter showCloseButton>
-
-          <Button
-            onClick={handleConfirm}
-            disabled={isPending}
-          >
-            {isPending
-              ? "Please wait..."
-              : nextStatus === "SUSPENDED"
-              ? "Suspend"
-              : "Activate"}
-          </Button>
-
-        </DialogFooter>
-
-      </DialogContent>
-    </Dialog>
+            <Button
+              onClick={handleConfirm}
+              disabled={isPending}
+            >
+              {isPending
+                ? "Please wait..."
+                : nextStatus ===
+                  "SUSPENDED"
+                ? "Suspend"
+                : "Activate"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

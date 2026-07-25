@@ -36,7 +36,7 @@ export default function AdminRentalsPage() {
   });
 
   if (isLoading) {
-    return <RentalSkeleton/>;
+    return <RentalSkeleton />;
   }
 
   if (isError) {
@@ -53,6 +53,7 @@ export default function AdminRentalsPage() {
 
   return (
     <div className="space-y-8">
+
       <div>
         <h1 className="text-3xl font-bold">
           Rental Management
@@ -64,6 +65,7 @@ export default function AdminRentalsPage() {
       </div>
 
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+
         <RentalSearch
           value={searchTerm}
           onChange={setSearchTerm}
@@ -75,6 +77,7 @@ export default function AdminRentalsPage() {
             setStatus(value ?? "ALL")
           }
         />
+
       </div>
 
       {rentals.length === 0 ? (
@@ -90,6 +93,7 @@ export default function AdminRentalsPage() {
           />
         </>
       )}
+
     </div>
   );
 }

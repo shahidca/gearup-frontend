@@ -2,15 +2,16 @@
 
 import { useState } from "react";
 
+import { useProviderGear } from "@/hooks/useProviderGear";
+import ProviderGearSkeleton from "@/components/dashboard/provider/gear/ProviderGearSkeleton";
+import ProviderGearFilters from "@/components/dashboard/provider/gear/ProviderGearFilters";
+import EmptyGearState from "@/components/dashboard/provider/gear/EmptyGearState";
+import ProviderGearTable from "@/components/dashboard/provider/gear/ProviderGearTable";
 
-import { useProviderGear } from "@/hooks/useProvider";
-import GearTable from "@/components/dashboard/provider/gear/GearTable";
-import GearSkeleton from "@/components/dashboard/provider/gear/GearSkeleton";
-import GearSearch from "@/components/dashboard/provider/gear/GearSearch";
-import GearFilters from "@/components/dashboard/provider/gear/GearFilters";
-import EmptyGear from "@/components/dashboard/provider/gear/EmptyGear";
 
 export default function ProviderGearPage() {
+  const [page, setPage] = useState(1);
+
   const [searchTerm, setSearchTerm] =
     useState("");
 
@@ -20,55 +21,74 @@ export default function ProviderGearPage() {
   const [condition, setCondition] =
     useState("");
 
-  const [page, setPage] =
-    useState(1);
-
-  const { data, isLoading } =
-    useProviderGear({
-      page,
-      limit: 10,
-      searchTerm,
-      categoryId,
-      condition,
-    });
+  const {
+    data,
+    isLoading,
+    isError,
+  } = useProviderGear({
+    page,
+    limit: 10,
+    searchTerm,
+    categoryId,
+    condition,
+  });
 
   if (isLoading) {
-    return <GearSkeleton />;
+    return <ProviderGearSkeleton />;
   }
 
-  const gear = data?.data ?? [];
+  if (isError) {
+    return (
+      <div className="py-20 text-center">
+        Failed to load your gear.
+      </div>
+    );
+  }
+
+  const gears = data?.data ?? [];
+  const meta = data?.meta;
 
   return (
-    <div className="space-y-6">
-      <div>
+    <main className="space-y-8">
+
+      {/* ================= Header ================= */}
+
+      <section>
 
         <h1 className="text-3xl font-bold">
           My Gear
         </h1>
 
-        <p className="text-muted-foreground mt-2">
-          Manage your rental gear.
+        <p className="mt-2 text-muted-foreground">
+          Manage your rental equipment.
         </p>
 
-      </div>
+      </section>
 
-      <GearSearch
-        value={searchTerm}
-        onChange={setSearchTerm}
-      />
+      {/* ================= Filters ================= */}
 
-      <GearFilters
+      <ProviderGearFilters
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
         categoryId={categoryId}
         setCategoryId={setCategoryId}
         condition={condition}
         setCondition={setCondition}
       />
 
-      {gear.length === 0 ? (
-        <EmptyGear />
+      {/* ================= Table ================= */}
+
+      {gears.length === 0 ? (
+        <EmptyGearState />
       ) : (
-        <GearTable gear={gear} />
+        <ProviderGearTable
+          gears={gears}
+          meta={meta}
+          page={page}
+          setPage={setPage}
+        />
       )}
-    </div>
+
+    </main>
   );
 }

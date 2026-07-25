@@ -2,15 +2,11 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { getDashboardStats } from "@/services/admin-dashboard.service";
+import { getAdminDashboard } from "@/services/admin.service";
 
-export const useAdminDashboard =
-  () => {
-    return useQuery({
-      queryKey: [
-        "admin-dashboard",
-      ],
-      queryFn:
-        getDashboardStats,
-    });
-  };
+export function useAdminDashboard() {
+  return useQuery({
+    queryKey: ["admin-dashboard"],
+    queryFn: getAdminDashboard,
+  });
+}

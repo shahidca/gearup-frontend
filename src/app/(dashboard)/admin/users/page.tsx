@@ -2,25 +2,25 @@
 
 import { useState } from "react";
 
-import UserSearch from "@/components/dashboard/admin/users/UserSearch";
-import UserFilters from "@/components/dashboard/admin/users/UserFilters";
-import UserTable from "@/components/dashboard/admin/users/UserTable";
-import UserSkeleton from "@/components/dashboard/admin/users/UserSkeleton";
-import EmptyUsers from "@/components/dashboard/admin/users/EmptyUsers";
-
 import { useAdminUsers } from "@/hooks/useAdminUsers";
-import Pagination from "@/components/shared/Pagination";
+
+import UserTable from "@/components/dashboard/admin/users/UserTable";
+import UserFilters from "@/components/dashboard/admin/users/UserFilters";
+import UserPagination from "@/components/dashboard/admin/users/UserPagination";
+import UserSkeleton from "@/components/dashboard/admin/users/UserSkeleton";
+import EmptyUserState from "@/components/dashboard/admin/users/EmptyUserState";
 
 export default function AdminUsersPage() {
   const [page, setPage] = useState(1);
+
   const [searchTerm, setSearchTerm] =
     useState("");
 
   const [role, setRole] =
-    useState("ALL");
+    useState("");
 
   const [status, setStatus] =
-    useState("ALL");
+    useState("");
 
   const {
     data,
@@ -30,14 +30,8 @@ export default function AdminUsersPage() {
     page,
     limit: 10,
     searchTerm,
-    role:
-      role === "ALL"
-        ? undefined
-        : role,
-    status:
-      status === "ALL"
-        ? undefined
-        : status,
+    role,
+    status,
   });
 
   if (isLoading) {
@@ -46,61 +40,53 @@ export default function AdminUsersPage() {
 
   if (isError) {
     return (
-      <div className="rounded-xl border border-red-300 bg-red-50 p-6">
+      <div className="flex h-[70vh] items-center justify-center">
         Failed to load users.
       </div>
     );
   }
 
-  const users = data?.data || [];
-
-  const meta = data?.meta;
-
   return (
-    <div className="space-y-8">
-      <div>
+    <main className="space-y-8">
+
+      <section>
+
         <h1 className="text-3xl font-bold">
-          Users Management
+          User Management
         </h1>
 
         <p className="mt-2 text-muted-foreground">
           Manage customers,
           providers and admins.
         </p>
-      </div>
 
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <UserSearch
-          value={searchTerm}
-          onChange={setSearchTerm}
-        />
+      </section>
 
-        <UserFilters
-          role={role}
-          status={status}
-          onRoleChange={(value) =>
-            setRole(value ?? "ALL")
-          }
-          onStatusChange={(value) =>
-            setStatus(value ?? "ALL")
-          }
-        />
-      </div>
+      <UserFilters
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        role={role}
+        setRole={setRole}
+        status={status}
+        setStatus={setStatus}
+      />
 
-      {users.length === 0 ? (
-        <EmptyUsers />
+      {data?.data?.length ? (
+        <>
+          <UserTable
+            users={data.data}
+          />
+
+          <UserPagination
+            meta={data.meta}
+            page={page}
+            setPage={setPage}
+          />
+        </>
       ) : (
-        
-      <>
-  <UserTable users={users} />
-
-  <Pagination
-    currentPage={meta?.page || 1}
-    totalPage={meta?.totalPage || 1}
-    onPageChange={setPage}
-  />
-</>
+        <EmptyUserState />
       )}
-    </div>
+
+    </main>
   );
 }

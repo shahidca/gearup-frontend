@@ -6,65 +6,71 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 
+import toast from "react-hot-toast";
+
 import {
-  getAllUsers,
-  updateUserStatus,
-  TUserQuery,
-  getSingleUser,
-} from "@/services/admin-user.service";
+  getAdminUsers,
+  getSingleAdminUser,
+  updateAdminUserStatus,
+  TAdminUserQuery,
+} from "@/services/admin.service";
 
-import { toast } from "sonner";
-
-export const useAdminUsers = (
-  query: TUserQuery
-) => {
+export function useAdminUsers(
+  query: TAdminUserQuery
+) {
   return useQuery({
     queryKey: ["admin-users", query],
-    queryFn: () => getAllUsers(query),
+    queryFn: () => getAdminUsers(query),
   });
-};
+}
 
-export const useUpdateUserStatus = () => {
-  const queryClient = useQueryClient();
+export function useSingleAdminUser(
+  id: string
+) {
+  return useQuery({
+    queryKey: ["admin-user", id],
+    queryFn: () =>
+      getSingleAdminUser(id),
+    enabled: !!id,
+  });
+}
+
+export function useUpdateAdminUserStatus() {
+  const queryClient =
+    useQueryClient();
 
   return useMutation({
     mutationFn: ({
-      userId,
+      id,
       status,
     }: {
-      userId: string;
-      status: "ACTIVE" | "SUSPENDED";
+      id: string;
+      status: string;
     }) =>
-      updateUserStatus(userId, status),
+      updateAdminUserStatus(
+        id,
+        status
+      ),
 
     onSuccess: () => {
       toast.success(
-        "User status updated successfully"
+        "User status updated successfully."
       );
 
       queryClient.invalidateQueries({
         queryKey: ["admin-users"],
       });
+
+      queryClient.invalidateQueries({
+        queryKey: ["admin-dashboard"],
+      });
     },
 
-    onError: () => {
+    onError: (error: any) => {
       toast.error(
-        "Failed to update user status"
+        error?.response?.data?.message ??
+          "Failed to update user."
       );
     },
   });
-};
-
-export const useSingleUser = (
-  userId: string,
-  open: boolean
-) => {
-  return useQuery({
-    queryKey: ["admin-user", userId],
-
-    queryFn: () =>
-      getSingleUser(userId),
-
-    enabled: open && !!userId,
-  });
-};
+}

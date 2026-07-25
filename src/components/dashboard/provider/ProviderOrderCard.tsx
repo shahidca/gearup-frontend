@@ -1,12 +1,17 @@
 "use client";
 
-import Image from "next/image";
-import { useState } from "react";
+import Link from "next/link";
+import {
+  Calendar,
+  CreditCard,
+  User,
+  Package,
+  ArrowRight,
+} from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-import UpdateStatusDialog from "./UpdateStatusDialog";
+import OrderStatusBadge from "./orders/OrderStatusBadge";
 
 interface ProviderOrderCardProps {
   order: any;
@@ -15,114 +20,136 @@ interface ProviderOrderCardProps {
 export default function ProviderOrderCard({
   order,
 }: ProviderOrderCardProps) {
-  const [open, setOpen] = useState(false);
-
-  const item = order.rentalItems?.[0];
-  const gear = item?.gearItem;
+  const firstItem = order.rentalItems?.[0];
 
   return (
-    <>
-      <div className="overflow-hidden rounded-2xl border bg-card shadow-sm transition hover:shadow-lg">
+    <div className="rounded-2xl border bg-card shadow-sm transition-all hover:shadow-md">
 
-        <div className="relative h-56 bg-muted">
-          <Image
-            src={
-              gear?.images?.[0] ??
-              "https://placehold.co/700x500"
-            }
-            alt={gear?.name ?? "Gear"}
-            fill
-            className="object-cover"
-          />
+      {/* Header */}
+
+      <div className="flex items-center justify-between border-b p-5">
+
+        <div>
+
+          <h2 className="font-semibold">
+            {order.customer?.name}
+          </h2>
+
+          <p className="text-sm text-muted-foreground">
+            {order.customer?.email}
+          </p>
+
         </div>
 
-        <div className="space-y-5 p-5">
+        <OrderStatusBadge
+          status={order.status}
+        />
 
-          <div className="flex items-center justify-between">
+      </div>
 
-            <h2 className="text-xl font-bold">
-              {gear?.name}
-            </h2>
+      {/* Body */}
 
-            <Badge
-              className={
-                order.status === "PLACED"
-                  ? "bg-yellow-500"
-                  : order.status === "CONFIRMED"
-                    ? "bg-blue-600"
-                    : order.status === "PICKED_UP"
-                      ? "bg-purple-600"
-                      : order.status === "RETURNED"
-                        ? "bg-green-600"
-                        : "bg-red-600"
-              }
-            >
-              {order.status}
-            </Badge>
+      <div className="space-y-5 p-5">
+
+        {/* Gear */}
+
+        <div className="flex gap-3">
+
+          <Package className="mt-1 h-5 w-5 text-primary" />
+
+          <div>
+
+            <p className="font-medium">
+              {firstItem?.gearItem?.name}
+            </p>
+
+            <p className="text-sm text-muted-foreground">
+              Quantity :
+              {" "}
+              {firstItem?.quantity}
+            </p>
 
           </div>
 
-          <div className="space-y-2 text-sm">
+        </div>
 
-            <p>
-              <strong>Customer:</strong>{" "}
-              {order.customer?.name}
+        {/* Rental Date */}
+
+        <div className="flex gap-3">
+
+          <Calendar className="mt-1 h-5 w-5 text-primary" />
+
+          <div>
+
+            <p className="text-sm">
+
+              {new Date(
+                order.startDate
+              ).toLocaleDateString()}
+
+              {" - "}
+
+              {new Date(
+                order.endDate
+              ).toLocaleDateString()}
+
             </p>
 
-            <p>
-              <strong>Email:</strong>{" "}
-              {order.customer?.email}
-            </p>
+          </div>
 
-            <p>
-              <strong>Quantity:</strong>{" "}
-              {item?.quantity}
-            </p>
+        </div>
 
-            <div className="flex items-center gap-2">
-              <strong>Payment:</strong>
+        {/* Payment */}
 
-              <Badge
-                variant={
-                  order.payment?.status === "COMPLETED"
-                    ? "default"
-                    : "secondary"
-                }
-              >
-                {order.payment?.status}
-              </Badge>
-            </div>
+        <div className="flex gap-3">
 
-            <p>
-              <strong>Total:</strong> ৳
+          <CreditCard className="mt-1 h-5 w-5 text-primary" />
+
+          <div>
+
+            <p className="font-semibold">
+              ৳
               {Number(
-                order.payment?.amount ?? 0
+                order.totalAmount
               ).toLocaleString()}
             </p>
 
-          </div>
+            <p className="text-sm text-muted-foreground">
+              Payment :
+              {" "}
+              {order.payment?.status ??
+                "UNPAID"}
+            </p>
 
-          {order.status !== "RETURNED" &&
-            order.status !== "CANCELLED" && (
-              <Button
-                className="w-full"
-                onClick={() =>
-                  setOpen(true)
-                }
-              >
-                Update Status
-              </Button>
-            )}
+          </div>
 
         </div>
 
       </div>
 
-      <UpdateStatusDialog
-        open={open}
-        onOpenChange={setOpen}
-        order={order}
-      />
-    </>
+      {/* Footer */}
+
+      <div className="flex items-center justify-between border-t p-5">
+
+        <Link href={`/provider/orders/${order.id}`}>
+          <Button
+            variant="outline"
+            size="sm"
+          >
+            View Details
+          </Button>
+        </Link>
+
+        <Link href={`/provider/orders/${order.id}`}>
+          <Button size="sm">
+            Manage
+
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </Link>
+
+      </div>
+
+    </div>
   );
 }

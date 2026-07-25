@@ -1,36 +1,121 @@
 import api from "./axios";
 
-export const getAllUsers = async () => {
-  const res = await api.get("/admin/users");
-  return res.data.data;
+/* ===========================
+   Dashboard
+=========================== */
+
+export const getAdminDashboard = async () => {
+  const response = await api.get("/admin/dashboard");
+
+  return response.data.data;
 };
 
-export const updateUserStatus = async (
+/* ===========================
+   Users
+=========================== */
+
+export interface TAdminUserQuery {
+  page?: number;
+  limit?: number;
+  searchTerm?: string;
+  role?: string;
+  status?: string;
+}
+
+export const getAdminUsers = async (
+  query: TAdminUserQuery
+) => {
+  const response = await api.get("/admin/users", {
+    params: query,
+  });
+
+  return response.data;
+};
+
+export const getSingleAdminUser = async (
+  id: string
+) => {
+  const response = await api.get(
+    `/admin/users/${id}`
+  );
+
+  return response.data.data;
+};
+
+export const updateAdminUserStatus = async (
   id: string,
   status: string
 ) => {
-  const res = await api.patch(
+  const response = await api.patch(
     `/admin/users/${id}`,
     {
       status,
     }
   );
 
-  return res.data.data;
+  return response.data.data;
 };
 
-export const getAllGear = async () => {
-  const res = await api.get("/admin/gear");
-  return res.data.data;
+/* ===========================
+   Gear
+=========================== */
+
+export interface TAdminGearQuery {
+  page?: number;
+  limit?: number;
+  searchTerm?: string;
+}
+
+export const getAdminGear = async (
+  query?: TAdminGearQuery
+) => {
+  const response = await api.get("/admin/gear", {
+    params: query,
+  });
+
+  return response.data.data;
 };
 
-export const getAllRentals = async () => {
-  const res = await api.get("/admin/rentals");
-  return res.data.data;
+export const getSingleAdminGear = async (
+  id: string
+) => {
+  const response = await api.get(
+    `/admin/gear/${id}`
+  );
+
+  return response.data.data;
 };
 
-export const getDashboardStats = async () => {
-  const res = await api.get("/admin/dashboard");
+export const updateAdminGear = async (
+  id: string,
+  payload: Record<string, unknown>
+) => {
+  const response = await api.patch(
+    `/admin/gear/${id}`,
+    payload
+  );
 
-  return res.data.data;
+  return response.data.data;
 };
+
+export const deleteAdminGear = async (
+  id: string
+) => {
+  const response = await api.delete(
+    `/admin/gear/${id}`
+  );
+
+  return response.data.data;
+};
+
+/* ===========================
+   Rentals
+=========================== */
+
+export const getAdminRentals =
+  async () => {
+    const response =
+      await api.get("/admin/rentals");
+
+    return response.data.data;
+  };

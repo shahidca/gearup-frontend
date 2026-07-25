@@ -9,11 +9,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "placehold.co",
+        hostname: "ui-avatars.com",
       },
       {
         protocol: "https",
-        hostname: "example.com",
+        hostname: "placehold.co",
       },
     ],
   },

@@ -108,6 +108,16 @@ export const getProviderOrders =
     return response.data.data;
   };
 
+  export const getProviderOrderById =
+  async (id: string) => {
+    const response =
+      await api.get(
+        `/provider/orders/${id}`
+      );
+
+    return response.data.data;
+  };
+
 export const updateProviderOrder =
   async (
     id: string,
@@ -119,6 +129,39 @@ export const updateProviderOrder =
         {
           status,
         }
+      );
+
+    return response.data.data;
+  };
+
+
+  /* ===========================
+   Provider Profile
+=========================== */
+
+export const getProviderProfile =
+  async () => {
+    const response =
+      await api.get(
+        "/provider/profile"
+      );
+
+    return response.data.data;
+  };
+
+export const updateProviderProfile =
+  async (
+    payload: {
+      name?: string;
+      phone?: string;
+      address?: string;
+      profileImage?: string;
+    }
+  ) => {
+    const response =
+      await api.patch(
+        "/provider/profile",
+        payload
       );
 
     return response.data.data;
