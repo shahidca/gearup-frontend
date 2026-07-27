@@ -31,10 +31,6 @@ export default function UpdateOrderStatusDialog({
   const { mutate, isPending } =
     useUpdateProviderOrder();
 
-  /* ===============================
-     Next Status
-  =============================== */
-
   const nextStatus = useMemo(() => {
     switch (currentStatus) {
       case "PLACED":
@@ -46,14 +42,12 @@ export default function UpdateOrderStatusDialog({
       case "PICKED_UP":
         return "RETURNED";
 
+      case "RETURNED":
+      case "CANCELLED":
       default:
         return null;
     }
   }, [currentStatus]);
-
-  /* ===============================
-     Update Status
-  =============================== */
 
   const handleUpdate = () => {
     if (!nextStatus) return;
@@ -76,57 +70,55 @@ export default function UpdateOrderStatusDialog({
       open={open}
       onOpenChange={onOpenChange}
     >
-      <DialogContent>
-
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
-
           <DialogTitle>
             Update Rental Status
           </DialogTitle>
-
         </DialogHeader>
 
         {!nextStatus ? (
-          <div className="rounded-lg border bg-muted p-4 text-center">
-
+          <div className="rounded-lg border bg-muted p-5">
             <p className="font-medium">
-              This order cannot be updated anymore.
+              This rental order cannot be updated anymore.
             </p>
 
-            <p className="mt-2 text-sm text-muted-foreground">
+            <p className="mt-3 text-sm text-muted-foreground">
               Current Status:
-              {" "}
-              <strong>{currentStatus}</strong>
+              <span className="ml-2 font-semibold text-foreground">
+                {currentStatus}
+              </span>
             </p>
-
           </div>
         ) : (
           <div className="space-y-4">
+            <div>
+              <p className="text-sm text-muted-foreground">
+                Current Status
+              </p>
 
-            <p>
-              Current Status:
-              {" "}
-              <strong>{currentStatus}</strong>
-            </p>
+              <p className="font-semibold">
+                {currentStatus}
+              </p>
+            </div>
 
-            <p>
-              Next Status:
-              {" "}
-              <strong className="text-primary">
+            <div>
+              <p className="text-sm text-muted-foreground">
+                Next Status
+              </p>
+
+              <p className="font-semibold text-primary">
                 {nextStatus}
-              </strong>
-            </p>
+              </p>
+            </div>
 
             <p className="text-sm text-muted-foreground">
-              Are you sure you want to update this rental
-              status?
+              Are you sure you want to update the rental status?
             </p>
-
           </div>
         )}
 
         <DialogFooter>
-
           <Button
             variant="outline"
             onClick={() =>
@@ -146,9 +138,7 @@ export default function UpdateOrderStatusDialog({
                 : `Mark as ${nextStatus}`}
             </Button>
           )}
-
         </DialogFooter>
-
       </DialogContent>
     </Dialog>
   );

@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 
-import RentalTable from "@/components/dashboard/admin/rentals/RentalTable";
-import RentalSkeleton from "@/components/dashboard/admin/rentals/RentalSkeleton";
 import EmptyRentals from "@/components/dashboard/admin/rentals/EmptyRentals";
-import RentalSearch from "@/components/dashboard/admin/rentals/RentalSearch";
 import RentalFilters from "@/components/dashboard/admin/rentals/RentalFilters";
+import RentalSearch from "@/components/dashboard/admin/rentals/RentalSearch";
+import RentalSkeleton from "@/components/dashboard/admin/rentals/RentalSkeleton";
+import RentalTable from "@/components/dashboard/admin/rentals/RentalTable";
 
 import Pagination from "@/components/shared/Pagination";
 
@@ -41,59 +41,84 @@ export default function AdminRentalsPage() {
 
   if (isError) {
     return (
-      <div className="rounded-xl border border-red-300 bg-red-50 p-6">
-        Failed to load rentals.
+      <div className="flex h-[70vh] items-center justify-center">
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-8 text-center shadow-sm">
+
+          <h2 className="text-xl font-semibold text-red-600">
+            Failed to load rentals
+          </h2>
+
+          <p className="mt-2 text-sm text-muted-foreground">
+            Something went wrong while loading
+            rental orders. Please refresh the
+            page and try again.
+          </p>
+
+        </div>
       </div>
     );
   }
 
-  const rentals = data?.data || [];
+  const rentals = data?.data ?? [];
 
   const meta = data?.meta;
 
   return (
-    <div className="space-y-8">
+    <main className="space-y-8">
 
-      <div>
+      {/* ================= Header ================= */}
+
+      <section>
+
         <h1 className="text-3xl font-bold">
           Rental Management
         </h1>
 
         <p className="mt-2 text-muted-foreground">
-          Manage all rental orders.
+          View, manage and update every rental
+          order across the platform.
         </p>
-      </div>
 
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      </section>
+
+      {/* ================= Search & Filters ================= */}
+
+      <section className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
 
         <RentalSearch
           value={searchTerm}
-          onChange={setSearchTerm}
+          onChange={(value) => {
+            setPage(1);
+            setSearchTerm(value);
+          }}
         />
 
         <RentalFilters
           status={status}
-          onStatusChange={(value) =>
-            setStatus(value ?? "ALL")
-          }
+          onStatusChange={(value) => {
+            setPage(1);
+            setStatus(value ?? "ALL");
+          }}
         />
 
-      </div>
+      </section>
 
-      {rentals.length === 0 ? (
-        <EmptyRentals />
-      ) : (
+      {/* ================= Table ================= */}
+
+      {rentals.length > 0 ? (
         <>
           <RentalTable rentals={rentals} />
 
           <Pagination
-            currentPage={meta?.page || 1}
-            totalPage={meta?.totalPage || 1}
+            currentPage={meta?.page ?? 1}
+            totalPage={meta?.totalPage ?? 1}
             onPageChange={setPage}
           />
         </>
+      ) : (
+        <EmptyRentals />
       )}
 
-    </div>
+    </main>
   );
 }

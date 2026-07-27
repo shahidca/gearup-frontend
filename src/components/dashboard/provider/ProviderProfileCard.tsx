@@ -7,12 +7,11 @@ import {
   MapPin,
   Phone,
   ShieldCheck,
-  User,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 
-import { TUser } from "@/types/user";
+import type { TUser } from "@/types/user";
 
 interface ProviderProfileCardProps {
   profile: TUser;
@@ -21,23 +20,26 @@ interface ProviderProfileCardProps {
 export default function ProviderProfileCard({
   profile,
 }: ProviderProfileCardProps) {
+  const image =
+    profile.profileImage &&
+    (profile.profileImage.startsWith("http://") ||
+      profile.profileImage.startsWith("https://") ||
+      profile.profileImage.startsWith("/"))
+      ? profile.profileImage
+      : "/images/avatar-placeholder.png";
+
   return (
     <div className="rounded-3xl border bg-card p-8 shadow-sm">
+      {/* Avatar */}
 
       <div className="flex flex-col items-center">
-
         <div className="relative h-32 w-32 overflow-hidden rounded-full border-4 border-primary/20">
-
           <Image
-            src={
-              profile.profileImage ??
-              "https://placehold.co/300x300"
-            }
+            src={image}
             alt={profile.name}
             fill
             className="object-cover"
           />
-
         </div>
 
         <h2 className="mt-5 text-2xl font-bold">
@@ -49,7 +51,6 @@ export default function ProviderProfileCard({
         </p>
 
         <div className="mt-4 flex gap-3">
-
           <Badge>
             {profile.role}
           </Badge>
@@ -63,13 +64,12 @@ export default function ProviderProfileCard({
           >
             {profile.status}
           </Badge>
-
         </div>
-
       </div>
 
-      <div className="mt-8 space-y-5">
+      {/* Information */}
 
+      <div className="mt-8 space-y-5">
         <InfoRow
           icon={<Mail className="h-5 w-5" />}
           label="Email"
@@ -79,13 +79,13 @@ export default function ProviderProfileCard({
         <InfoRow
           icon={<Phone className="h-5 w-5" />}
           label="Phone"
-          value={profile.phone ?? "Not added"}
+          value={profile.phone || "Not added"}
         />
 
         <InfoRow
           icon={<MapPin className="h-5 w-5" />}
           label="Address"
-          value={profile.address ?? "Not added"}
+          value={profile.address || "Not added"}
         />
 
         <InfoRow
@@ -97,35 +97,37 @@ export default function ProviderProfileCard({
         <InfoRow
           icon={<CalendarDays className="h-5 w-5" />}
           label="Joined"
-          value={new Date(
+          value={
             profile.createdAt
-          ).toLocaleDateString()}
+              ? new Date(
+                  profile.createdAt
+                ).toLocaleDateString()
+              : "-"
+          }
         />
-
       </div>
-
     </div>
   );
+}
+
+interface InfoRowProps {
+  icon: React.ReactNode;
+  label: string;
+  value: React.ReactNode;
 }
 
 function InfoRow({
   icon,
   label,
   value,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-}) {
+}: InfoRowProps) {
   return (
     <div className="flex items-start gap-3">
-
       <div className="mt-1 text-primary">
         {icon}
       </div>
 
       <div>
-
         <p className="text-sm text-muted-foreground">
           {label}
         </p>
@@ -133,9 +135,7 @@ function InfoRow({
         <p className="font-medium">
           {value}
         </p>
-
       </div>
-
     </div>
   );
 }

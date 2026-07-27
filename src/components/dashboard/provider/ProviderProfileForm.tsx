@@ -1,17 +1,28 @@
 "use client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { Loader2, Save } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import { TUser } from "@/types/user";
+import type { UseMutationResult } from "@tanstack/react-query";
+import type { TUser } from "@/types/user";
 
 interface ProviderProfileFormProps {
   profile: TUser;
-  updateProfile: any;
+  updateProfile: UseMutationResult<
+    unknown,
+    Error,
+    {
+      name?: string;
+      phone?: string;
+      address?: string;
+      profileImage?: string;
+    }
+  >;
 }
 
 type TProviderProfileForm = {
@@ -25,15 +36,18 @@ export default function ProviderProfileForm({
   profile,
   updateProfile,
 }: ProviderProfileFormProps) {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
     reset,
+    formState: { errors, isDirty },
   } = useForm<TProviderProfileForm>();
 
   useEffect(() => {
     reset({
-      name: profile.name,
+      name: profile.name ?? "",
       phone: profile.phone ?? "",
       address: profile.address ?? "",
       profileImage:
@@ -44,7 +58,11 @@ export default function ProviderProfileForm({
   const onSubmit = (
     data: TProviderProfileForm
   ) => {
-    updateProfile.mutate(data);
+    updateProfile.mutate(data, {
+      onSuccess: () => {
+        router.refresh();
+      },
+    });
   };
 
   return (
@@ -57,6 +75,7 @@ export default function ProviderProfileForm({
       </h2>
 
       <div className="grid gap-6">
+        {/* Name */}
 
         <div>
           <label className="mb-2 block text-sm font-medium">
@@ -64,10 +83,21 @@ export default function ProviderProfileForm({
           </label>
 
           <Input
-            {...register("name")}
             placeholder="Full Name"
+            {...register("name", {
+              required:
+                "Full name is required",
+            })}
           />
+
+          {errors.name && (
+            <p className="mt-1 text-sm text-destructive">
+              {errors.name.message}
+            </p>
+          )}
         </div>
+
+        {/* Email */}
 
         <div>
           <label className="mb-2 block text-sm font-medium">
@@ -77,8 +107,11 @@ export default function ProviderProfileForm({
           <Input
             value={profile.email}
             disabled
+            readOnly
           />
         </div>
+
+        {/* Phone */}
 
         <div>
           <label className="mb-2 block text-sm font-medium">
@@ -86,10 +119,12 @@ export default function ProviderProfileForm({
           </label>
 
           <Input
+            placeholder="+8801XXXXXXXXX"
             {...register("phone")}
-            placeholder="+880..."
           />
         </div>
+
+        {/* Address */}
 
         <div>
           <label className="mb-2 block text-sm font-medium">
@@ -97,10 +132,12 @@ export default function ProviderProfileForm({
           </label>
 
           <Input
-            {...register("address")}
             placeholder="Your Address"
+            {...register("address")}
           />
         </div>
+
+        {/* Profile Image */}
 
         <div>
           <label className="mb-2 block text-sm font-medium">
@@ -108,18 +145,21 @@ export default function ProviderProfileForm({
           </label>
 
           <Input
-            {...register("profileImage")}
-            placeholder="https://..."
+            placeholder="https://example.com/avatar.jpg"
+            {...register(
+              "profileImage"
+            )}
           />
         </div>
-
       </div>
 
-      <div className="mt-8">
-
+      <div className="mt-8 flex justify-end">
         <Button
           type="submit"
-          disabled={updateProfile.isPending}
+          disabled={
+            updateProfile.isPending ||
+            !isDirty
+          }
         >
           {updateProfile.isPending ? (
             <>
@@ -133,7 +173,6 @@ export default function ProviderProfileForm({
             </>
           )}
         </Button>
-
       </div>
     </form>
   );

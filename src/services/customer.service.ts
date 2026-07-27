@@ -1,5 +1,9 @@
 import api from "./axios";
 
+/* ======================================================
+   Types
+====================================================== */
+
 export type TCustomerRentalQuery = {
   page?: number;
   limit?: number;
@@ -7,11 +11,21 @@ export type TCustomerRentalQuery = {
   status?: string;
 };
 
+/* ======================================================
+   Dashboard
+====================================================== */
+
 export const getCustomerDashboard = async () => {
-  const response = await api.get("/customer/dashboard");
+  const response = await api.get(
+    "/customer/dashboard"
+  );
 
   return response.data.data;
 };
+
+/* ======================================================
+   Rentals
+====================================================== */
 
 export const getCustomerRentals = async (
   query?: TCustomerRentalQuery
@@ -26,38 +40,6 @@ export const getCustomerRentals = async (
   return response.data;
 };
 
-export const getCustomerPayments = async () => {
-  const response = await api.get(
-    "/customer/payments"
-  );
-
-  return response.data.data;
-};
-
-export const getCustomerProfile = async () => {
-  const response = await api.get(
-    "/customer/profile"
-  );
-
-  return response.data.data;
-};
-
-export const updateCustomerProfile = async (
-  data: {
-    name?: string;
-    phone?: string;
-    address?: string;
-    profileImage?: string;
-  }
-) => {
-  const response = await api.patch(
-    "/customer/profile",
-    data
-  );
-
-  return response.data.data;
-};
-
 export const getCustomerRental = async (
   rentalId: string
 ) => {
@@ -68,15 +50,55 @@ export const getCustomerRental = async (
   return response.data.data;
 };
 
-/* ===========================
+/* ======================================================
    Rental Invoice
-=========================== */
+====================================================== */
 
 export const getRentalInvoice = async (
   rentalId: string
 ) => {
   const response = await api.get(
     `/customer/rentals/${rentalId}/invoice`
+  );
+
+  return response.data.data;
+};
+
+/* ======================================================
+   Payments
+====================================================== */
+
+export const getCustomerPayments = async () => {
+  const response = await api.get(
+    "/customer/payments"
+  );
+
+  return response.data.data;
+};
+
+/* ======================================================
+   Profile
+====================================================== */
+
+export const getCustomerProfile = async () => {
+  const response = await api.get(
+    "/customer/profile"
+  );
+
+  return response.data.data;
+};
+
+export const updateCustomerProfile = async (
+  payload: {
+    name?: string;
+    phone?: string;
+    address?: string;
+    profileImage?: string;
+  }
+) => {
+  const response = await api.patch(
+    "/customer/profile",
+    payload
   );
 
   return response.data.data;

@@ -129,6 +129,10 @@ export function useUpdateProviderGear() {
       queryClient.invalidateQueries({
         queryKey: ["provider-dashboard"],
       });
+
+      queryClient.invalidateQueries({
+        queryKey: ["provider-gear"],
+      });
     },
 
     onError: (error: any) => {
@@ -185,6 +189,35 @@ export function useProviderOrders() {
   });
 }
 
+/* ======================================================
+   Single Provider Order
+====================================================== */
+
+export function useSingleProviderOrder(
+  id: string
+) {
+  return useQuery({
+    queryKey: [
+      "provider-order",
+      id,
+    ],
+    queryFn: async () => {
+      const orders =
+        await getProviderOrders();
+
+      return orders.find(
+        (order: any) =>
+          order.id === id
+      );
+    },
+    enabled: !!id,
+  });
+}
+
+/* ======================================================
+   Update Provider Order
+====================================================== */
+
 export function useUpdateProviderOrder() {
   const queryClient =
     useQueryClient();
@@ -209,6 +242,10 @@ export function useUpdateProviderOrder() {
 
       queryClient.invalidateQueries({
         queryKey: ["provider-orders"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["provider-order"],
       });
 
       queryClient.invalidateQueries({

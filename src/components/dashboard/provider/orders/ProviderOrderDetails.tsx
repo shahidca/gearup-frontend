@@ -6,11 +6,13 @@ import {
   Calendar,
   CreditCard,
   Mail,
+  MapPin,
   Package,
   Phone,
   User,
 } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 import OrderStatusBadge from "./OrderStatusBadge";
@@ -25,11 +27,14 @@ export default function ProviderOrderDetails({
 }: ProviderOrderDetailsProps) {
   const [open, setOpen] = useState(false);
 
+  const paymentStatus =
+    order.payment?.status ?? "UNPAID";
+
   return (
     <>
       <div className="space-y-8">
 
-        {/* ================= Customer Information ================= */}
+        {/* ================= Customer ================= */}
 
         <section className="rounded-2xl border bg-card p-6">
 
@@ -48,7 +53,7 @@ export default function ProviderOrderDetails({
                 </p>
 
                 <p className="font-medium">
-                  {order.customer?.name}
+                  {order.customer?.name ?? "-"}
                 </p>
               </div>
             </div>
@@ -62,7 +67,7 @@ export default function ProviderOrderDetails({
                 </p>
 
                 <p className="font-medium">
-                  {order.customer?.email}
+                  {order.customer?.email ?? "-"}
                 </p>
               </div>
             </div>
@@ -76,7 +81,21 @@ export default function ProviderOrderDetails({
                 </p>
 
                 <p className="font-medium">
-                  {order.customer?.phone || "N/A"}
+                  {order.customer?.phone ?? "N/A"}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <MapPin className="h-5 w-5 text-primary" />
+
+              <div>
+                <p className="text-sm text-muted-foreground">
+                  Address
+                </p>
+
+                <p className="font-medium">
+                  {order.customer?.address ?? "N/A"}
                 </p>
               </div>
             </div>
@@ -85,7 +104,7 @@ export default function ProviderOrderDetails({
 
         </section>
 
-        {/* ================= Rental Information ================= */}
+        {/* ================= Rental ================= */}
 
         <section className="rounded-2xl border bg-card p-6">
 
@@ -111,7 +130,7 @@ export default function ProviderOrderDetails({
                     order.startDate
                   ).toLocaleDateString()}
 
-                  {" - "}
+                  {" — "}
 
                   {new Date(
                     order.endDate
@@ -126,7 +145,7 @@ export default function ProviderOrderDetails({
             <div>
 
               <p className="text-sm text-muted-foreground">
-                Status
+                Rental Status
               </p>
 
               <div className="mt-2">
@@ -141,7 +160,7 @@ export default function ProviderOrderDetails({
 
         </section>
 
-        {/* ================= Rental Items ================= */}
+        {/* ================= Items ================= */}
 
         <section className="rounded-2xl border bg-card p-6">
 
@@ -149,50 +168,56 @@ export default function ProviderOrderDetails({
             Rental Items
           </h2>
 
-          <div className="space-y-4">
+          {order.rentalItems?.length ? (
+            <div className="space-y-4">
 
-            {order.rentalItems?.map(
-              (item: any) => (
-                <div
-                  key={item.id}
-                  className="flex items-center justify-between rounded-xl border p-4"
-                >
+              {order.rentalItems.map(
+                (item: any) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between rounded-xl border p-4"
+                  >
 
-                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3">
 
-                    <Package className="h-5 w-5 text-primary" />
+                      <Package className="h-5 w-5 text-primary" />
 
-                    <div>
+                      <div>
 
-                      <p className="font-medium">
-                        {item.gearItem?.name}
-                      </p>
+                        <p className="font-medium">
+                          {item.gearItem?.name}
+                        </p>
 
-                      <p className="text-sm text-muted-foreground">
-                        Quantity: {item.quantity}
+                        <p className="text-sm text-muted-foreground">
+                          Quantity: {item.quantity}
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                    <div className="text-right">
+
+                      <p className="font-semibold">
+                        ৳
+                        {Number(
+                          item.pricePerDay ?? 0
+                        ).toLocaleString()}
+                        /day
                       </p>
 
                     </div>
 
                   </div>
+                )
+              )}
 
-                  <div className="text-right">
-
-                    <p className="font-semibold">
-                      ৳
-                      {Number(
-                        item.pricePerDay
-                      ).toLocaleString()}
-                      /day
-                    </p>
-
-                  </div>
-
-                </div>
-              )
-            )}
-
-          </div>
+            </div>
+          ) : (
+            <p className="text-muted-foreground">
+              No rental items found.
+            </p>
+          )}
 
         </section>
 
@@ -216,9 +241,18 @@ export default function ProviderOrderDetails({
                   Payment Status
                 </p>
 
-                <p className="font-medium">
-                  {order.payment?.status ?? "UNPAID"}
-                </p>
+                <Badge
+                  className="mt-2"
+                  variant={
+                    paymentStatus === "COMPLETED"
+                      ? "default"
+                      : paymentStatus === "PENDING"
+                      ? "secondary"
+                      : "destructive"
+                  }
+                >
+                  {paymentStatus}
+                </Badge>
 
               </div>
 
@@ -233,7 +267,7 @@ export default function ProviderOrderDetails({
               <p className="text-2xl font-bold">
                 ৳
                 {Number(
-                  order.totalAmount
+                  order.totalAmount ?? 0
                 ).toLocaleString()}
               </p>
 
@@ -248,11 +282,11 @@ export default function ProviderOrderDetails({
         <section className="flex justify-end">
 
           <Button
-            onClick={() => setOpen(true)}
             disabled={
               order.status === "RETURNED" ||
               order.status === "CANCELLED"
             }
+            onClick={() => setOpen(true)}
           >
             Update Status
           </Button>
@@ -260,8 +294,6 @@ export default function ProviderOrderDetails({
         </section>
 
       </div>
-
-      {/* ================= Update Status Dialog ================= */}
 
       <UpdateOrderStatusDialog
         open={open}

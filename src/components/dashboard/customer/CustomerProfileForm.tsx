@@ -3,16 +3,12 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Loader2, Save } from "lucide-react";
+import { UseMutationResult } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { TUser } from "@/types/user";
-
-interface CustomerProfileFormProps {
-  profile: TUser;
-  updateProfile: any;
-}
 
 type TProfileForm = {
   name: string;
@@ -20,6 +16,16 @@ type TProfileForm = {
   address: string;
   profileImage: string;
 };
+
+interface CustomerProfileFormProps {
+  profile: TUser;
+  updateProfile: UseMutationResult<
+    TUser,
+    Error,
+    TProfileForm,
+    unknown
+  >;
+}
 
 export default function CustomerProfileForm({
   profile,
@@ -29,21 +35,25 @@ export default function CustomerProfileForm({
     register,
     handleSubmit,
     reset,
-  } = useForm<TProfileForm>();
+  } = useForm<TProfileForm>({
+    defaultValues: {
+      name: "",
+      phone: "",
+      address: "",
+      profileImage: "",
+    },
+  });
 
   useEffect(() => {
     reset({
       name: profile.name,
       phone: profile.phone ?? "",
       address: profile.address ?? "",
-      profileImage:
-        profile.profileImage ?? "",
+      profileImage: profile.profileImage ?? "",
     });
   }, [profile, reset]);
 
-  const onSubmit = (
-    data: TProfileForm
-  ) => {
+  const onSubmit = (data: TProfileForm) => {
     updateProfile.mutate(data);
   };
 
@@ -57,9 +67,7 @@ export default function CustomerProfileForm({
       </h2>
 
       <div className="grid gap-6">
-
         <div>
-
           <label className="mb-2 block text-sm font-medium">
             Full Name
           </label>
@@ -68,11 +76,9 @@ export default function CustomerProfileForm({
             {...register("name")}
             placeholder="Full Name"
           />
-
         </div>
 
         <div>
-
           <label className="mb-2 block text-sm font-medium">
             Email
           </label>
@@ -81,11 +87,9 @@ export default function CustomerProfileForm({
             value={profile.email}
             disabled
           />
-
         </div>
 
         <div>
-
           <label className="mb-2 block text-sm font-medium">
             Phone
           </label>
@@ -94,11 +98,9 @@ export default function CustomerProfileForm({
             {...register("phone")}
             placeholder="+880..."
           />
-
         </div>
 
         <div>
-
           <label className="mb-2 block text-sm font-medium">
             Address
           </label>
@@ -107,11 +109,9 @@ export default function CustomerProfileForm({
             {...register("address")}
             placeholder="Your Address"
           />
-
         </div>
 
         <div>
-
           <label className="mb-2 block text-sm font-medium">
             Profile Image URL
           </label>
@@ -120,13 +120,10 @@ export default function CustomerProfileForm({
             {...register("profileImage")}
             placeholder="https://..."
           />
-
         </div>
-
       </div>
 
       <div className="mt-8">
-
         <Button
           type="submit"
           disabled={updateProfile.isPending}
@@ -143,9 +140,7 @@ export default function CustomerProfileForm({
             </>
           )}
         </Button>
-
       </div>
-
     </form>
   );
 }

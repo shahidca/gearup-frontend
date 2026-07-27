@@ -28,25 +28,27 @@ export default function CustomerStatCard({
         hover:shadow-xl
       "
     >
-      <div className="flex items-center justify-between">
-
-        <div className="space-y-2">
-
+      <div className="flex items-center justify-between gap-4">
+        <div className="min-w-0 flex-1 space-y-2">
           <p className="text-sm font-medium text-muted-foreground">
             {title}
           </p>
 
-          <h2 className="text-3xl font-bold tracking-tight">
+          <h2 className="truncate text-3xl font-bold tracking-tight">
             {value}
           </h2>
-
         </div>
 
         <div
           className="
+            flex
+            h-16
+            w-16
+            shrink-0
+            items-center
+            justify-center
             rounded-2xl
             bg-primary/10
-            p-4
             text-primary
             transition-all
             duration-300
@@ -57,7 +59,6 @@ export default function CustomerStatCard({
         >
           {icon}
         </div>
-
       </div>
     </div>
   );

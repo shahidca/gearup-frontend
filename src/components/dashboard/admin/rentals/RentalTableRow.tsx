@@ -13,50 +13,93 @@ interface RentalTableRowProps {
 export default function RentalTableRow({
   rental,
 }: RentalTableRowProps) {
+  const paymentStatus =
+    rental.payment?.status ?? "UNPAID";
+
+  const rentalStatus = rental.status;
+
   return (
-    <tr className="border-b hover:bg-muted/40 transition-colors">
-      <td className="px-4 py-4">
+    <tr
+      className="
+        border-b
+        transition-colors
+        hover:bg-muted/40
+      "
+    >
+      {/* ================= Customer ================= */}
+
+      <td className="px-4 py-5">
         <div>
           <p className="font-medium">
-            {rental.customer.name}
+            {rental.customer?.name ?? "-"}
           </p>
 
           <p className="text-sm text-muted-foreground">
-            {rental.customer.email}
+            {rental.customer?.email ?? "-"}
           </p>
         </div>
       </td>
 
-      <td className="px-4 py-4">
+      {/* ================= Gear ================= */}
+
+      <td className="px-4 py-5">
         {rental.rentalItems
-          .map((item) => item.gearItem.name)
-          .join(", ")}
+          ?.map((item) => item.gearItem?.name)
+          .join(", ") || "-"}
       </td>
 
-      <td className="px-4 py-4">
+      {/* ================= Rental Date ================= */}
+
+      <td className="px-4 py-5">
         {new Date(
           rental.startDate
         ).toLocaleDateString()}
       </td>
 
-      <td className="px-4 py-4">
-        ৳{rental.totalAmount}
+      {/* ================= Total ================= */}
+
+      <td className="px-4 py-5 font-medium">
+        ৳
+        {Number(
+          rental.totalAmount ?? 0
+        ).toLocaleString()}
       </td>
 
-      <td className="px-4 py-4">
-        <Badge variant="outline">
-          {rental.payment?.status ??
-            "UNPAID"}
+      {/* ================= Payment ================= */}
+
+      <td className="px-4 py-5">
+        <Badge
+          variant={
+            paymentStatus === "COMPLETED"
+              ? "default"
+              : paymentStatus === "PENDING"
+              ? "secondary"
+              : "destructive"
+          }
+        >
+          {paymentStatus}
         </Badge>
       </td>
 
-      <td className="px-4 py-4">
-        <Badge>
-          {rental.status}
+      {/* ================= Rental Status ================= */}
+
+      <td className="px-4 py-5">
+        <Badge
+          variant={
+            rentalStatus === "RETURNED"
+              ? "default"
+              : rentalStatus === "CANCELLED"
+              ? "destructive"
+              : "secondary"
+          }
+        >
+          {rentalStatus}
         </Badge>
       </td>
 
-      <td className="px-4 py-4 text-right">
+      {/* ================= Actions ================= */}
+
+      <td className="px-4 py-5 text-right">
         <RentalActionMenu
           rental={rental}
         />

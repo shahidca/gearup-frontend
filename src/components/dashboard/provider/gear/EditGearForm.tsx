@@ -27,10 +27,8 @@ export default function EditGearForm({
     isError,
   } = useSingleProviderGear(gearId);
 
-  const {
-    mutate,
-    isPending,
-  } = useUpdateProviderGear();
+  const updateGear =
+    useUpdateProviderGear();
 
   const [formData, setFormData] =
     useState<GearFormData>({
@@ -45,69 +43,66 @@ export default function EditGearForm({
       images: "",
     });
 
-  /* ==========================================
-     Populate Form When Gear Loads
-  ========================================== */
+  /* ===========================
+     Populate Form
+  =========================== */
 
   useEffect(() => {
     if (!gear) return;
 
     setFormData({
       name: gear.name ?? "",
-
       description:
         gear.description ?? "",
-
       brand: gear.brand ?? "",
-
       categoryId:
         gear.categoryId ?? "",
-
       condition:
         gear.condition ?? "GOOD",
-
       stock: String(
         gear.stock ?? 0
       ),
-
       availableStock: String(
         gear.availableStock ?? 0
       ),
-
       pricePerDay: String(
         gear.pricePerDay ?? 0
       ),
-
       images:
-        gear.images?.join(", ") ??
-        "",
+        gear.images?.join(", ") ?? "",
     });
   }, [gear]);
 
-  /* ==========================================
+  /* ===========================
      Submit
-  ========================================== */
+  =========================== */
 
   const handleSubmit = (
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
 
-    mutate(
+    updateGear.mutate(
       {
         id: gearId,
 
         payload: {
-          ...formData,
+          name: formData.name,
+          description:
+            formData.description,
+          brand: formData.brand,
+          categoryId:
+            formData.categoryId,
+          condition:
+            formData.condition,
 
           stock: Number(
             formData.stock
           ),
 
-          availableStock:
-            Number(
-              formData.availableStock
-            ),
+          availableStock: Number(
+            formData.availableStock
+          ),
 
           pricePerDay: Number(
             formData.pricePerDay
@@ -115,9 +110,7 @@ export default function EditGearForm({
 
           images: formData.images
             .split(",")
-            .map((img) =>
-              img.trim()
-            )
+            .map((img) => img.trim())
             .filter(Boolean),
         },
       },
@@ -131,9 +124,9 @@ export default function EditGearForm({
     );
   };
 
-  /* ==========================================
+  /* ===========================
      Loading
-  ========================================== */
+  =========================== */
 
   if (isLoading) {
     return (
@@ -143,9 +136,9 @@ export default function EditGearForm({
     );
   }
 
-  /* ==========================================
+  /* ===========================
      Error
-  ========================================== */
+  =========================== */
 
   if (isError || !gear) {
     return (
@@ -155,16 +148,16 @@ export default function EditGearForm({
     );
   }
 
-  /* ==========================================
-     Form
-  ========================================== */
+  /* ===========================
+     Render
+  =========================== */
 
   return (
     <GearForm
       formData={formData}
       setFormData={setFormData}
       onSubmit={handleSubmit}
-      loading={isPending}
+      loading={updateGear.isPending}
       submitText="Update Gear"
     />
   );

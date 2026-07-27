@@ -1,20 +1,31 @@
 "use client";
 
 import {
-  Users,
-  Package,
-  ShoppingBag,
-  DollarSign,
-  UserCheck,
-  ShieldCheck,
-  Clock3,
   CheckCircle2,
+  Clock3,
+  DollarSign,
+  Package,
+  ShieldCheck,
+  ShoppingBag,
+  UserCheck,
+  Users,
 } from "lucide-react";
 
 import AdminStatCard from "./AdminStatCard";
 
+interface AdminStatsData {
+  totalUsers: number;
+  customers: number;
+  providers: number;
+  totalGear: number;
+  totalRentals: number;
+  activeRentals: number;
+  completedRentals: number;
+  totalRevenue: number;
+}
+
 interface AdminStatsProps {
-  stats: any;
+  stats: AdminStatsData;
 }
 
 export default function AdminStats({
@@ -25,50 +36,50 @@ export default function AdminStats({
 
       <AdminStatCard
         title="Total Users"
-        value={stats.totalUsers}
+        value={stats.totalUsers ?? 0}
         icon={<Users className="size-7" />}
       />
 
       <AdminStatCard
         title="Customers"
-        value={stats.customers}
+        value={stats.customers ?? 0}
         icon={<UserCheck className="size-7" />}
       />
 
       <AdminStatCard
         title="Providers"
-        value={stats.providers}
+        value={stats.providers ?? 0}
         icon={<ShieldCheck className="size-7" />}
       />
 
       <AdminStatCard
         title="Total Gear"
-        value={stats.totalGear}
+        value={stats.totalGear ?? 0}
         icon={<Package className="size-7" />}
       />
 
       <AdminStatCard
         title="Total Rentals"
-        value={stats.totalRentals}
+        value={stats.totalRentals ?? 0}
         icon={<ShoppingBag className="size-7" />}
       />
 
       <AdminStatCard
         title="Active Rentals"
-        value={stats.activeRentals}
+        value={stats.activeRentals ?? 0}
         icon={<Clock3 className="size-7" />}
       />
 
       <AdminStatCard
         title="Completed Rentals"
-        value={stats.completedRentals}
+        value={stats.completedRentals ?? 0}
         icon={<CheckCircle2 className="size-7" />}
       />
 
       <AdminStatCard
         title="Revenue"
         value={`৳${Number(
-          stats.totalRevenue
+          stats.totalRevenue ?? 0
         ).toLocaleString()}`}
         icon={<DollarSign className="size-7" />}
       />

@@ -1,24 +1,25 @@
 "use client";
 
-import EditGearForm from "@/components/dashboard/provider/gear/EditGearForm";
 import { use } from "react";
 
+import EditGearForm from "@/components/dashboard/provider/gear/EditGearForm";
 
+interface EditGearPageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
 
 export default function EditGearPage({
   params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+}: EditGearPageProps) {
   const { id } = use(params);
 
   return (
     <main className="space-y-8">
-
       {/* Header */}
 
       <section>
-
         <h1 className="text-3xl font-bold">
           Edit Gear
         </h1>
@@ -26,11 +27,11 @@ export default function EditGearPage({
         <p className="mt-2 text-muted-foreground">
           Update your rental gear information.
         </p>
-
       </section>
 
-      <EditGearForm gearId={id} />
+      {/* Form */}
 
+      <EditGearForm gearId={id} />
     </main>
   );
 }

@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import {
+  ArrowRight,
   Calendar,
   CreditCard,
-  User,
   Package,
-  ArrowRight,
 } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 import OrderStatusBadge from "./orders/OrderStatusBadge";
@@ -20,23 +20,39 @@ interface ProviderOrderCardProps {
 export default function ProviderOrderCard({
   order,
 }: ProviderOrderCardProps) {
-  const firstItem = order.rentalItems?.[0];
+  const firstItem =
+    order.rentalItems?.[0];
+
+  const extraItems =
+    (order.rentalItems?.length ?? 1) - 1;
+
+  const paymentStatus =
+    order.payment?.status ?? "UNPAID";
 
   return (
-    <div className="rounded-2xl border bg-card shadow-sm transition-all hover:shadow-md">
-
-      {/* Header */}
+    <div
+      className="
+        rounded-2xl
+        border
+        bg-card
+        shadow-sm
+        transition-all
+        hover:border-primary/20
+        hover:shadow-md
+      "
+    >
+      {/* ================= Header ================= */}
 
       <div className="flex items-center justify-between border-b p-5">
 
         <div>
 
           <h2 className="font-semibold">
-            {order.customer?.name}
+            {order.customer?.name ?? "-"}
           </h2>
 
           <p className="text-sm text-muted-foreground">
-            {order.customer?.email}
+            {order.customer?.email ?? "-"}
           </p>
 
         </div>
@@ -47,7 +63,7 @@ export default function ProviderOrderCard({
 
       </div>
 
-      {/* Body */}
+      {/* ================= Body ================= */}
 
       <div className="space-y-5 p-5">
 
@@ -60,14 +76,20 @@ export default function ProviderOrderCard({
           <div>
 
             <p className="font-medium">
-              {firstItem?.gearItem?.name}
+              {firstItem?.gearItem?.name ?? "-"}
             </p>
 
             <p className="text-sm text-muted-foreground">
-              Quantity :
-              {" "}
-              {firstItem?.quantity}
+              Quantity:{" "}
+              {firstItem?.quantity ?? 0}
             </p>
+
+            {extraItems > 0 && (
+              <p className="text-xs text-muted-foreground">
+                +{extraItems} more item
+                {extraItems > 1 ? "s" : ""}
+              </p>
+            )}
 
           </div>
 
@@ -87,7 +109,7 @@ export default function ProviderOrderCard({
                 order.startDate
               ).toLocaleDateString()}
 
-              {" - "}
+              {" — "}
 
               {new Date(
                 order.endDate
@@ -110,16 +132,22 @@ export default function ProviderOrderCard({
             <p className="font-semibold">
               ৳
               {Number(
-                order.totalAmount
+                order.totalAmount ?? 0
               ).toLocaleString()}
             </p>
 
-            <p className="text-sm text-muted-foreground">
-              Payment :
-              {" "}
-              {order.payment?.status ??
-                "UNPAID"}
-            </p>
+            <Badge
+              className="mt-2"
+              variant={
+                paymentStatus === "COMPLETED"
+                  ? "default"
+                  : paymentStatus === "PENDING"
+                  ? "secondary"
+                  : "destructive"
+              }
+            >
+              {paymentStatus}
+            </Badge>
 
           </div>
 
@@ -127,11 +155,13 @@ export default function ProviderOrderCard({
 
       </div>
 
-      {/* Footer */}
+      {/* ================= Footer ================= */}
 
       <div className="flex items-center justify-between border-t p-5">
 
-        <Link href={`/provider/orders/${order.id}`}>
+        <Link
+          href={`/provider/orders/${order.id}`}
+        >
           <Button
             variant="outline"
             size="sm"
@@ -140,7 +170,9 @@ export default function ProviderOrderCard({
           </Button>
         </Link>
 
-        <Link href={`/provider/orders/${order.id}`}>
+        <Link
+          href={`/provider/orders/${order.id}`}
+        >
           <Button size="sm">
             Manage
 

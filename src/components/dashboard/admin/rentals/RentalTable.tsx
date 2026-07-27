@@ -11,52 +11,78 @@ interface RentalTableProps {
 export default function RentalTable({
   rentals,
 }: RentalTableProps) {
-  return (
-    <div className="overflow-hidden rounded-2xl border bg-card">
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-muted/50">
-            <tr>
-              <th className="px-4 py-3 text-left">
-                Customer
-              </th>
+  if (!rentals?.length) {
+    return (
+      <div className="rounded-2xl border bg-card p-10 text-center">
+        <h3 className="text-lg font-semibold">
+          No rentals found
+        </h3>
 
-              <th className="px-4 py-3 text-left">
-                Gear
-              </th>
-
-              <th className="px-4 py-3 text-left">
-                Rental Date
-              </th>
-
-              <th className="px-4 py-3 text-left">
-                Total
-              </th>
-
-              <th className="px-4 py-3 text-left">
-                Payment
-              </th>
-
-              <th className="px-4 py-3 text-left">
-                Status
-              </th>
-
-              <th className="px-4 py-3 text-right">
-                Action
-              </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {rentals.map((rental) => (
-              <RentalTableRow
-                key={rental.id}
-                rental={rental}
-              />
-            ))}
-          </tbody>
-        </table>
+        <p className="mt-2 text-sm text-muted-foreground">
+          There are no rental orders to display.
+        </p>
       </div>
+    );
+  }
+
+  return (
+    <div className="overflow-x-auto rounded-2xl border bg-card shadow-sm">
+
+      <table className="w-full min-w-[1100px]">
+
+        {/* ================= Header ================= */}
+
+        <thead className="border-b bg-muted/40">
+
+          <tr>
+
+            <th className="px-4 py-4 text-left font-semibold">
+              Customer
+            </th>
+
+            <th className="px-4 py-4 text-left font-semibold">
+              Gear
+            </th>
+
+            <th className="px-4 py-4 text-left font-semibold">
+              Rental Date
+            </th>
+
+            <th className="px-4 py-4 text-left font-semibold">
+              Total
+            </th>
+
+            <th className="px-4 py-4 text-left font-semibold">
+              Payment
+            </th>
+
+            <th className="px-4 py-4 text-left font-semibold">
+              Status
+            </th>
+
+            <th className="px-4 py-4 text-right font-semibold">
+              Actions
+            </th>
+
+          </tr>
+
+        </thead>
+
+        {/* ================= Body ================= */}
+
+        <tbody>
+
+          {rentals.map((rental) => (
+            <RentalTableRow
+              key={rental.id}
+              rental={rental}
+            />
+          ))}
+
+        </tbody>
+
+      </table>
+
     </div>
   );
 }

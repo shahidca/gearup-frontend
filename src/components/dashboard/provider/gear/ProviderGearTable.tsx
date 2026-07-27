@@ -20,13 +20,18 @@ import {
 } from "@/components/ui/table";
 
 import DeleteGearDialog from "./DeleteGearDialog";
+import ProviderGearPagination from "./ProviderGearPagination";
 
 import type { TGear } from "@/types/gear";
-import ProviderGearPagination from "./ProviderGearPagination";
 
 interface ProviderGearTableProps {
   gears: TGear[];
-  meta: any;
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPage: number;
+  };
   page: number;
   setPage: (page: number) => void;
 }
@@ -46,7 +51,7 @@ export default function ProviderGearTable({
   ] = useState(false);
 
   return (
-    <div className="rounded-2xl border bg-card">
+    <div className="rounded-2xl border bg-card overflow-hidden">
 
       <Table>
 
@@ -76,125 +81,97 @@ export default function ProviderGearTable({
 
         <TableBody>
 
-          {gears.map((gear) => (
+          {gears.map((gear) => {
 
-            <TableRow key={gear.id}>
+            const stock =
+              gear.availableStock ??
+              gear.stock ??
+              0;
 
-              {/* Name */}
+            return (
+              <TableRow key={gear.id}>
 
-              <TableCell className="font-medium">
-                {gear.name}
-              </TableCell>
+                <TableCell className="font-medium">
+                  {gear.name}
+                </TableCell>
 
-              {/* Category */}
+                <TableCell>
+                  {gear.category?.name ?? "-"}
+                </TableCell>
 
-              <TableCell>
-                {gear.category?.name}
-              </TableCell>
+                <TableCell>
+                  ৳
+                  {Number(
+                    gear.pricePerDay
+                  ).toLocaleString()}
+                </TableCell>
 
-              {/* Price */}
+                <TableCell>{stock}</TableCell>
 
-              <TableCell>
-                ৳
-                {Number(
-                  gear.pricePerDay
-                ).toLocaleString()}
-              </TableCell>
+                <TableCell>
+                  {gear.condition}
+                </TableCell>
 
-              {/* Stock */}
+                <TableCell>
+                  {stock > 0 ? (
+                    <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700 dark:bg-green-900 dark:text-green-300">
+                      Available
+                    </span>
+                  ) : (
+                    <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-700 dark:bg-red-900 dark:text-red-300">
+                      Out of Stock
+                    </span>
+                  )}
+                </TableCell>
 
-              <TableCell>
-                {gear.availableStock}
-              </TableCell>
+                <TableCell>
 
-              {/* Condition */}
+                  <div className="flex justify-end gap-2">
 
-              <TableCell>
-                {gear.condition}
-              </TableCell>
+                    <Link
+                      href={`/gear/${gear.id}`}
+                    >
+                      <Button
+                        size="icon"
+                        variant="outline"
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </Link>
 
-              {/* Status */}
+                    <Link
+                      href={`/provider/gear/${gear.id}/edit`}
+                    >
+                      <Button
+                        size="icon"
+                        variant="outline"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                    </Link>
 
-              <TableCell>
-
-                {gear.availableStock > 0 ? (
-
-                  <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700 dark:bg-green-900 dark:text-green-300">
-
-                    Available
-
-                  </span>
-
-                ) : (
-
-                  <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-700 dark:bg-red-900 dark:text-red-300">
-
-                    Out of Stock
-
-                  </span>
-
-                )}
-
-              </TableCell>
-
-              {/* Actions */}
-
-              <TableCell>
-
-                <div className="flex justify-end gap-2">
-
-                  {/* View */}
-
-                  <Link
-                    href={`/gear/${gear.id}`}
-                  >
                     <Button
                       size="icon"
                       variant="outline"
+                      onClick={() => {
+                        setSelectedGear(gear);
+                        setOpenDeleteDialog(true);
+                      }}
                     >
-                      <Eye className="h-4 w-4" />
+                      <Trash2 className="h-4 w-4 text-red-500" />
                     </Button>
-                  </Link>
 
-                  {/* Edit */}
+                  </div>
 
-                  <Link
-                    href={`/provider/gear/${gear.id}/edit`}
-                  >
-                    <Button
-                      size="icon"
-                      variant="outline"
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                  </Link>
+                </TableCell>
 
-                  {/* Delete */}
-
-                  <Button
-                    size="icon"
-                    variant="outline"
-                    onClick={() => {
-                      setSelectedGear(gear);
-                      setOpenDeleteDialog(true);
-                    }}
-                  >
-                    <Trash2 className="h-4 w-4 text-red-500" />
-                  </Button>
-
-                </div>
-
-              </TableCell>
-
-            </TableRow>
-
-          ))}
+              </TableRow>
+            );
+          })}
 
         </TableBody>
 
       </Table>
-
-      {/* Pagination */}
 
       <ProviderGearPagination
         meta={meta}
@@ -202,10 +179,7 @@ export default function ProviderGearTable({
         setPage={setPage}
       />
 
-      {/* Delete Dialog */}
-
       {selectedGear && (
-
         <DeleteGearDialog
           open={openDeleteDialog}
           onOpenChange={
@@ -213,7 +187,6 @@ export default function ProviderGearTable({
           }
           gear={selectedGear}
         />
-
       )}
 
     </div>

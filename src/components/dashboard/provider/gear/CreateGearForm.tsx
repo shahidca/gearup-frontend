@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 import GearForm, {
   GearFormData,
@@ -33,6 +34,17 @@ export default function CreateGearForm() {
   ) => {
     e.preventDefault();
 
+    if (
+      !formData.name ||
+      !formData.description ||
+      !formData.categoryId ||
+      !formData.pricePerDay ||
+      !formData.stock
+    ) {
+      toast.error("Please fill all required fields.");
+      return;
+    }
+
     mutate(
       {
         ...formData,
@@ -40,7 +52,7 @@ export default function CreateGearForm() {
         stock: Number(formData.stock),
 
         availableStock: Number(
-          formData.availableStock
+          formData.availableStock || formData.stock
         ),
 
         pricePerDay: Number(

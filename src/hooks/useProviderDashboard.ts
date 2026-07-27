@@ -4,13 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 
 import { getProviderDashboard } from "@/services/provider-dashboard.service";
 
-export const useProviderDashboard =
-  () => {
-    return useQuery({
-      queryKey: [
-        "provider-dashboard",
-      ],
-      queryFn:
-        getProviderDashboard,
-    });
-  };
+/* ======================================================
+   Provider Dashboard
+====================================================== */
+
+export function useProviderDashboard() {
+  return useQuery({
+    queryKey: ["provider-dashboard"],
+    queryFn: getProviderDashboard,
+  });
+}

@@ -151,3 +151,112 @@ export const updateAdminProfile =
 
     return response.data.data;
   };
+
+  /* ===========================
+   Update User Role
+=========================== */
+
+export const updateAdminUserRole = async (
+  id: string,
+  role: string
+) => {
+  const response = await api.patch(
+    `/admin/users/${id}/role`,
+    {
+      role,
+    }
+  );
+
+  return response.data.data;
+};
+
+/* ===========================
+   Rental Status
+=========================== */
+
+export const updateAdminRentalStatus = async (
+  id: string,
+  status: string
+) => {
+  const response = await api.patch(
+    `/admin/rentals/${id}`,
+    {
+      status,
+    }
+  );
+
+  return response.data.data;
+};
+
+/* ===========================
+   Payments
+=========================== */
+
+export const getAdminPayments = async () => {
+  const response = await api.get(
+    "/admin/payments"
+  );
+
+  return response.data.data;
+};
+
+export const getSingleAdminPayment = async (
+  id: string
+) => {
+  const response = await api.get(
+    `/admin/payments/${id}`
+  );
+
+  return response.data.data;
+};
+
+/* ===========================
+   Categories
+=========================== */
+
+export const getAdminCategories = async () => {
+  const response = await api.get(
+    "/admin/categories"
+  );
+
+  return response.data.data;
+};
+
+export const createAdminCategory = async (
+  payload: {
+    name: string;
+    image?: string;
+  }
+) => {
+  const response = await api.post(
+    "/admin/categories",
+    payload
+  );
+
+  return response.data.data;
+};
+
+export const updateAdminCategory = async (
+  id: string,
+  payload: {
+    name?: string;
+    image?: string;
+  }
+) => {
+  const response = await api.patch(
+    `/admin/categories/${id}`,
+    payload
+  );
+
+  return response.data.data;
+};
+
+export const deleteAdminCategory = async (
+  id: string
+) => {
+  const response = await api.delete(
+    `/admin/categories/${id}`
+  );
+
+  return response.data.data;
+};

@@ -74,7 +74,9 @@ export default function CustomerPaymentsPage() {
         search={search}
         status={status}
         onSearchChange={setSearch}
-        onStatusChange={setStatus}
+        onStatusChange={(value) =>
+          setStatus(value ?? "ALL")
+        }
       />
 
       {payments.length === 0 ? (
