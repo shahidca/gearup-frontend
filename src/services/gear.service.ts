@@ -59,7 +59,7 @@ export interface GearResponse {
   data: Gear[];
 }
 
-export interface GearQuery {
+export interface TGearQuery {
   page?: number;
   limit?: number;
 
@@ -81,7 +81,7 @@ export interface GearQuery {
 }
 
 export const getGear = async (
-  params?: GearQuery
+  params?: TGearQuery
 ): Promise<GearResponse> => {
   const response = await api.get("/gear", {
     params,

@@ -71,7 +71,7 @@ export default function Categories() {
               {categories.map((category, index) => {
                 const Icon =
                   categoryIcons[
-                    category.slug as keyof typeof categoryIcons
+                  category.slug as keyof typeof categoryIcons
                   ] ?? Tent;
 
                 return (
@@ -94,6 +94,8 @@ export default function Categories() {
                     }}
                   >
                     <CategoryCard
+                      id={category.id}
+                      slug={category.slug}
                       title={category.name}
                       description={category.description}
                       count={category._count.gearItems}

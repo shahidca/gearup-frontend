@@ -4,10 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 
 import {
   getGear,
-  type GearQuery,
+  type TGearQuery,
 } from "@/services/gear.service";
 
-export function useGear(params?: GearQuery) {
+export function useGear(params?: TGearQuery) {
   return useQuery({
     queryKey: ["gear", params],
 
