@@ -28,3 +28,11 @@ export interface TUser {
 
   updatedAt?: string;
 }
+
+export interface ICurrentUser {
+  id: string;
+  name: string;
+  email: string;
+  role: TUserRole;
+  status: TUserStatus;
+}
