@@ -107,3 +107,33 @@ export const deleteReview =
 
     return response.data.data;
   };
+
+  /* ===========================
+   Homepage Reviews
+=========================== */
+
+export interface THomepageReview {
+  id: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+
+  customer: {
+    id: string;
+    name: string;
+    profileImage: string | null;
+  };
+
+  gearItem: {
+    id: string;
+    name: string;
+  };
+}
+
+export const getHomepageReviews = async (): Promise<
+  THomepageReview[]
+> => {
+  const response = await api.get("/reviews");
+
+  return response.data.data;
+};

@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
-
+import { getHomepageReviews } from "@/services/review.service";
 import {
   createReview,
   deleteReview,
@@ -181,5 +181,16 @@ export const useDeleteReview = () => {
           "Failed to delete review."
       );
     },
+  });
+};
+
+/* ===========================
+   Homepage Reviews
+=========================== */
+
+export const useHomepageReviews = () => {
+  return useQuery({
+    queryKey: ["homepage-reviews"],
+    queryFn: getHomepageReviews,
   });
 };

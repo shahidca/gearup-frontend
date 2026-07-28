@@ -4,82 +4,89 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Quote, Star } from "lucide-react";
 
+import type { THomepageReview } from "@/services/review.service";
+
 type TestimonialCardProps = {
-  name: string;
-  role: string;
-  image: string;
-  rating: number;
-  review: string;
+  review: THomepageReview;
 };
 
 export default function TestimonialCard({
-  name,
-  role,
-  image,
-  rating,
   review,
 }: TestimonialCardProps) {
-  // Cap the rating scale at 5 stars maximum
   const totalStars = 5;
-  const validatedRating = Math.min(Math.max(0, rating), totalStars);
+
+  const rating = Math.min(
+    Math.max(0, review.rating),
+    totalStars
+  );
 
   return (
     <motion.div
-      whileHover={{ y: -6, scale: 1.01 }}
-      transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
-      className="group flex h-full flex-col justify-between rounded-3xl border border-border/60 bg-gradient-to-br from-card to-card/50 p-8 shadow-md transition-all duration-300 hover:border-primary/30 hover:shadow-xl dark:border-white/5 dark:from-card/80 dark:to-card/20"
+      whileHover={{
+        y: -6,
+        scale: 1.01,
+      }}
+      transition={{
+        duration: 0.35,
+      }}
+      className="group flex h-full flex-col justify-between rounded-3xl border border-border/60 bg-card p-8 shadow-md transition-all hover:border-primary/30 hover:shadow-xl"
     >
       <div>
-        {/* Quote Icon & Styling */}
-        <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-foreground">
-          <Quote className="size-5 fill-current transition-transform duration-300 group-hover:rotate-12" />
+        <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+          <Quote className="h-5 w-5 fill-current" />
         </div>
 
-        {/* Review Paragraph */}
-        <blockquote className="text-base leading-relaxed text-muted-foreground italic">
-          "{review}"
+        <blockquote className="italic leading-7 text-muted-foreground">
+          "{review.comment}"
         </blockquote>
       </div>
 
       <div>
-        {/* Rating Section */}
-        <div className="my-6 flex items-center gap-1">
-          {Array.from({ length: totalStars }).map((_, index) => {
-            const isFilled = index < validatedRating;
-            return (
-              <Star
-                key={index}
-                className={`size-4 transition-transform duration-300 group-hover:scale-110 ${
-                  isFilled 
-                    ? "fill-amber-400 text-amber-400" 
-                    : "text-muted/40 dark:text-white/10"
+        <div className="my-6 flex gap-1">
+          {Array.from({
+            length: totalStars,
+          }).map((_, index) => (
+            <Star
+              key={index}
+              className={`h-4 w-4 ${index < rating
+                  ? "fill-yellow-400 text-yellow-400"
+                  : "text-muted"
                 }`}
-              />
-            );
-          })}
+            />
+          ))}
         </div>
 
-        {/* User Profile Footer */}
-        <div className="flex items-center gap-4 border-t border-border/60 pt-5 dark:border-white/5">
-          {/* Avatar Container */}
-          <div className="relative size-12 flex-shrink-0 overflow-hidden rounded-full ring-2 ring-primary/10 transition-all duration-300 group-hover:ring-primary/30">
-            <Image
-              src={image}
-              alt={name}
-              fill
-              sizes="48px"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-          </div>
+        <div className="border-t pt-5">
+          <p className="mb-2 text-xs font-medium text-primary">
+            {review.gearItem.name}
+          </p>
 
-          {/* User Meta Details */}
-          <div className="min-w-0">
-            <h4 className="truncate text-base font-bold tracking-tight text-foreground transition-colors duration-300 group-hover:text-primary">
-              {name}
-            </h4>
-            <p className="truncate text-xs font-medium text-muted-foreground">
-              {role}
-            </p>
+          <div className="flex items-center gap-4">
+            <div className="relative h-12 w-12 overflow-hidden rounded-full">
+              <Image
+                src={
+                  review.customer.profileImage
+                    ? review.customer.profileImage
+                    : "/images/avatar.png"
+                }
+                alt={review.customer.name}
+                fill
+                sizes="48px"
+                className="object-cover"
+              />
+            </div>
+
+            <div>
+              <h4 className="font-bold">
+                {review.customer.name}
+              </h4>
+
+              <p className="text-xs text-muted-foreground">
+                {new Date(
+                  review.createdAt
+                ).toLocaleDateString()}
+              </p>
+            </div>
           </div>
         </div>
       </div>
