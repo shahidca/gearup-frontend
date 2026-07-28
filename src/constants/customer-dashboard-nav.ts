@@ -2,22 +2,28 @@ import {
   LayoutDashboard,
   User,
   Package,
+  CreditCard,
 } from "lucide-react";
 
-export const dashboardNav = [
+export const customerDashboardNav = [
   {
     title: "Dashboard",
-    href: "/dashboard",
+    href: "/customer",
     icon: LayoutDashboard,
   },
   {
     title: "Profile",
-    href: "/profile",
+    href: "/customer/profile",
     icon: User,
   },
   {
     title: "My Rentals",
-    href: "/rentals",
+    href: "/customer/rentals",
     icon: Package,
+  },
+  {
+    title: "Payments",
+    href: "/customer/payments",
+    icon: CreditCard,
   },
 ];

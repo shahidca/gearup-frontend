@@ -26,7 +26,7 @@ export default function ProviderProfileCard({
       profile.profileImage.startsWith("https://") ||
       profile.profileImage.startsWith("/"))
       ? profile.profileImage
-      : "/images/avatar-placeholder.png";
+      : "/images/avatar.png";
 
   return (
     <div className="rounded-3xl border bg-card p-8 shadow-sm">

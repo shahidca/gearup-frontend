@@ -31,7 +31,7 @@ export const supportLinks = [
 export const socials = [
   {
     icon: FaFacebook,
-    href: "https://facebook.com",
+    href: "https://www.facebook.com/shahidca3737",
   },
   {
     icon: FaInstagram,

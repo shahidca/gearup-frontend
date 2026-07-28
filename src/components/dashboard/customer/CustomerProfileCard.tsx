@@ -33,8 +33,10 @@ export default function CustomerProfileCard({
 
           <Image
             src={
-              profile.profileImage ??
-              "https://placehold.co/300x300"
+              profile.profileImage &&
+                !profile.profileImage.includes("drive.google.com")
+                ? profile.profileImage
+                : "/images/avatar.png"
             }
             alt={profile.name}
             fill

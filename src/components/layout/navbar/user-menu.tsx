@@ -19,6 +19,7 @@ import {
 
 export default function UserMenu() {
   const router = useRouter();
+
   const queryClient = useQueryClient();
 
   const { data: user } = useCurrentUser();
@@ -27,13 +28,12 @@ export default function UserMenu() {
     try {
       await logoutUser();
 
-      queryClient.invalidateQueries({
-        queryKey: ["current-user"],
-      });
+      queryClient.clear();
 
       toast.success("Logged out successfully");
 
       router.push("/");
+
       router.refresh();
     } catch {
       toast.error("Logout failed");
@@ -42,33 +42,47 @@ export default function UserMenu() {
 
   if (!user) return null;
 
+  let dashboardHref = "/customer";
+  let profileHref = "/customer/profile";
+
+  if (user.role === "PROVIDER") {
+    dashboardHref = "/provider/dashboard";
+    profileHref = "/provider/profile";
+  }
+
+  if (user.role === "ADMIN") {
+    dashboardHref = "/admin";
+    profileHref = "/admin/profile";
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex cursor-pointer items-center gap-3 rounded-xl border bg-background px-3 py-2 transition hover:bg-accent">
-        {/* Avatar */}
+
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary font-semibold text-primary-foreground">
           {user.name.charAt(0).toUpperCase()}
         </div>
 
-        {/* User Info */}
         <div className="hidden text-left md:block">
-          <p className="text-sm font-semibold leading-none">
+          <p className="text-sm font-semibold">
             {user.name}
           </p>
 
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {user.role}
           </p>
         </div>
+
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
         align="end"
         className="w-56"
       >
+
         <DropdownMenuItem>
           <Link
-            href="/dashboard"
+            href={dashboardHref}
             className="flex w-full items-center gap-2"
           >
             <LayoutDashboard className="h-4 w-4" />
@@ -78,7 +92,7 @@ export default function UserMenu() {
 
         <DropdownMenuItem>
           <Link
-            href="/profile"
+            href={profileHref}
             className="flex w-full items-center gap-2"
           >
             <User className="h-4 w-4" />
@@ -90,11 +104,12 @@ export default function UserMenu() {
 
         <DropdownMenuItem
           onClick={handleLogout}
-          className="text-destructive focus:text-destructive"
+          className="text-destructive"
         >
-          <LogOut className="h-4 w-4" />
+          <LogOut className="mr-2 h-4 w-4" />
           Logout
         </DropdownMenuItem>
+
       </DropdownMenuContent>
     </DropdownMenu>
   );
