@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import {
+  usePathname,
+  useRouter,
+} from "next/navigation";
+
+import { motion } from "framer-motion";
 
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 
@@ -12,6 +17,8 @@ export default function ProtectedRoute({
 }) {
   const router = useRouter();
 
+  const pathname = usePathname();
+
   const {
     data: user,
     isLoading,
@@ -19,14 +26,51 @@ export default function ProtectedRoute({
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.replace("/login");
+      router.replace(
+        `/login?redirect=${encodeURIComponent(pathname)}`
+      );
     }
-  }, [user, isLoading, router]);
+  }, [
+    user,
+    isLoading,
+    router,
+    pathname,
+  ]);
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        Loading...
+      <div className="flex min-h-screen items-center justify-center bg-background">
+
+        <div className="flex flex-col items-center gap-6">
+
+          <motion.div
+            animate={{
+              rotate: 360,
+            }}
+            transition={{
+              duration: 1,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+            className="flex h-20 w-20 items-center justify-center rounded-3xl bg-primary text-4xl font-bold text-primary-foreground shadow-xl"
+          >
+            G
+          </motion.div>
+
+          <div className="text-center">
+
+            <h2 className="text-xl font-semibold">
+              Checking your session...
+            </h2>
+
+            <p className="mt-2 text-sm text-muted-foreground">
+              Please wait a moment.
+            </p>
+
+          </div>
+
+        </div>
+
       </div>
     );
   }
@@ -35,5 +79,5 @@ export default function ProtectedRoute({
     return null;
   }
 
-  return children;
+  return <>{children}</>;
 }

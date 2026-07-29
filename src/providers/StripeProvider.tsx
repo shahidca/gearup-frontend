@@ -10,13 +10,17 @@ const stripePromise = loadStripe(
 
 interface StripeProviderProps {
   children: ReactNode;
-  clientSecret: string;
+  clientSecret?: string;
 }
 
 export default function StripeProvider({
   children,
   clientSecret,
 }: StripeProviderProps) {
+  if (!clientSecret) {
+    return <>{children}</>;
+  }
+
   return (
     <Elements
       stripe={stripePromise}
