@@ -8,14 +8,12 @@ import { useCustomerRentals } from "@/hooks/useCustomer";
 import CustomerRentalSearch from "@/components/dashboard/customer/CustomerRentalSearch";
 import CustomerRentalFilters from "@/components/dashboard/customer/CustomerRentalFilters";
 import EmptyRentals from "@/components/dashboard/customer/EmptyRentals";
-import useDebounce from "@/hooks/useDebounce";
+
 
 export default function CustomerRentalsPage() {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const debouncedSearchTerm =
-    useDebounce(searchTerm, 500);
   const [status, setStatus] = useState("ALL");
 
   const handleSearchChange = (value: string) => {
@@ -33,14 +31,14 @@ export default function CustomerRentalsPage() {
     isLoading,
     isError,
   } = useCustomerRentals({
-    page,
-    limit: 9,
-    searchTerm: debouncedSearchTerm,
-    status:
-      status === "ALL"
-        ? undefined
-        : status,
-  });
+  page,
+  limit: 9,
+  searchTerm,
+  status:
+    status === "ALL"
+      ? undefined
+      : status,
+});
 
   if (isLoading && !data) {
     return <CustomerRentalSkeleton />;
