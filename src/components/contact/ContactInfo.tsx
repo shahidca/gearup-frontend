@@ -11,7 +11,7 @@ import {
 const contactItems = [
   {
     title: "Email",
-    value: "support@gearup.com",
+    value: "mdshahidca@gearup.com",
     description: "We'll reply within 24 hours.",
     icon: Mail,
   },
@@ -23,7 +23,7 @@ const contactItems = [
   },
   {
     title: "Office",
-    value: "Dhaka, Bangladesh",
+    value: "Satkhira, Bangladesh",
     description: "Visit our headquarters anytime.",
     icon: MapPin,
   },

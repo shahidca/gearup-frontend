@@ -137,3 +137,15 @@ export const getHomepageReviews = async (): Promise<
 
   return response.data.data;
 };
+
+export interface TReviewQuery {
+  limit?: number;
+  page?: number;
+  gearItemId?: string;
+}
+
+// Public/General reviews fetcher
+export const getReviews = async (params?: TReviewQuery) => {
+  const response = await api.get("/reviews", { params });
+  return response.data;
+};

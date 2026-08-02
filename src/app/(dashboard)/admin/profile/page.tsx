@@ -28,7 +28,9 @@ export default function AdminProfilePage() {
     return (
       <div className="flex h-[70vh] items-center justify-center">
         Failed to load profile.
+        
       </div>
+    
     );
   }
 

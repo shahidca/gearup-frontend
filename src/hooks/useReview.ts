@@ -1,5 +1,6 @@
 "use client";
 
+import { getReviews, type TReviewQuery } from "@/services/review.service";
 import {
   useMutation,
   useQuery,
@@ -48,6 +49,13 @@ export const useSingleReview = (
     enabled: !!id,
   });
 };
+
+export function useReviews(params?: TReviewQuery) {
+  return useQuery({
+    queryKey: ["reviews", params],
+    queryFn: () => getReviews(params),
+  });
+}
 
 /* ===========================
    Gear Reviews

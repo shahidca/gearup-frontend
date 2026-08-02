@@ -92,6 +92,5 @@ export const getGear = async (
 
 export const getSingleGear = async (id: string) => {
   const response = await api.get(`/gear/${id}`);
-
   return response.data.data;
 };

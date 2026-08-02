@@ -1,121 +1,51 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 import { Loader2 } from "lucide-react";
 
-import StripeProvider from "./StripeProvider";
 import CheckoutForm from "./CheckoutForm";
-
-import { Separator } from "@/components/ui/separator";
-
 import { useCreatePayment } from "@/hooks/usePayment";
 
-interface PaymentFormProps {
-  rental: any;
-}
+// 1. Ensure publishable key exists
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+);
 
-export default function PaymentForm({
-  rental,
-}: PaymentFormProps) {
-  const item = rental.rentalItems?.[0];
-  const gear = item?.gearItem;
-
-  const [clientSecret, setClientSecret] =
-    useState("");
-
-  const [paymentIntentId, setPaymentIntentId] =
-    useState("");
-
-  const { mutateAsync, isPending } =
-    useCreatePayment();
+export default function PaymentForm({ rental }: { rental: any }) {
+  const [clientSecret, setClientSecret] = useState<string>("");
+  const { mutateAsync: createPayment, isPending } = useCreatePayment();
 
   useEffect(() => {
-    const initializePayment = async () => {
-      try {
-        const result =
-          await mutateAsync(rental.id);
+    if (rental?.id) {
+      createPayment(rental.id)
+        .then((res: any) => {
+          // Adjust response parsing according to your backend response object
+          const secret = res?.data?.clientSecret || res?.clientSecret;
+          if (secret) {
+            setClientSecret(secret);
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to create payment intent:", err);
+        });
+    }
+  }, [rental?.id, createPayment]);
 
-        setClientSecret(
-          result.clientSecret
-        );
-
-        setPaymentIntentId(
-          result.paymentIntentId
-        );
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    initializePayment();
-  }, [mutateAsync, rental.id]);
-
+  // Show spinner while waiting for clientSecret
   if (isPending || !clientSecret) {
     return (
-      <div className="flex h-80 items-center justify-center rounded-3xl border bg-card">
-        <Loader2 className="h-8 w-8 animate-spin" />
+      <div className="flex h-48 flex-col items-center justify-center gap-3 rounded-2xl border bg-card">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="text-sm text-muted-foreground">Initializing payment gateway...</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-3xl border bg-card p-8 shadow-sm">
-
-      <h2 className="text-2xl font-bold">
-        Payment Summary
-      </h2>
-
-      <Separator className="my-6" />
-
-      <div className="space-y-4">
-
-        <div className="flex justify-between">
-          <span>Gear</span>
-          <span className="font-semibold">
-            {gear?.name}
-          </span>
-        </div>
-
-        <div className="flex justify-between">
-          <span>Quantity</span>
-          <span>{item?.quantity}</span>
-        </div>
-
-        <div className="flex justify-between">
-          <span>Rental Days</span>
-          <span>{item?.totalDays}</span>
-        </div>
-
-        <div className="flex justify-between">
-          <span>Status</span>
-          <span>{rental.status}</span>
-        </div>
-
-        <div className="flex justify-between">
-          <span>Total</span>
-
-          <span className="text-xl font-bold text-primary">
-            ৳
-            {Number(
-              rental.totalAmount
-            ).toLocaleString()}
-          </span>
-        </div>
-
-      </div>
-
-      <Separator className="my-6" />
-
-      <StripeProvider
-        clientSecret={clientSecret}
-      >
-        <CheckoutForm
-          paymentIntentId={
-            paymentIntentId
-          }
-        />
-      </StripeProvider>
-
-    </div>
+    <Elements stripe={stripePromise} options={{ clientSecret }}>
+      <CheckoutForm rental={rental} />
+    </Elements>
   );
 }

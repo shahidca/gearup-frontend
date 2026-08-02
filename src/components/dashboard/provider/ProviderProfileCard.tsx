@@ -20,13 +20,7 @@ interface ProviderProfileCardProps {
 export default function ProviderProfileCard({
   profile,
 }: ProviderProfileCardProps) {
-  const image =
-    profile.profileImage &&
-    (profile.profileImage.startsWith("http://") ||
-      profile.profileImage.startsWith("https://") ||
-      profile.profileImage.startsWith("/"))
-      ? profile.profileImage
-      : "/images/avatar.png";
+
 
   return (
     <div className="rounded-3xl border bg-card p-8 shadow-sm">
@@ -35,7 +29,12 @@ export default function ProviderProfileCard({
       <div className="flex flex-col items-center">
         <div className="relative h-32 w-32 overflow-hidden rounded-full border-4 border-primary/20">
           <Image
-            src={image}
+            src={
+              profile.profileImage &&
+                !profile.profileImage.includes("drive.google.com")
+                ? profile.profileImage
+                : "/images/avatar.png"
+            }
             alt={profile.name}
             fill
             className="object-cover"
@@ -100,8 +99,8 @@ export default function ProviderProfileCard({
           value={
             profile.createdAt
               ? new Date(
-                  profile.createdAt
-                ).toLocaleDateString()
+                profile.createdAt
+              ).toLocaleDateString()
               : "-"
           }
         />

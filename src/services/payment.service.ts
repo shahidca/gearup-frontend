@@ -29,3 +29,8 @@ export const confirmPayment = async (
 
   return res.data.data;
 };
+
+export const getMyPayments = async () => {
+  const response = await api.get("/payments");
+  return response.data.data;
+};

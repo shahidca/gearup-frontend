@@ -4,18 +4,13 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Loader2, Save } from "lucide-react";
 import { UseMutationResult } from "@tanstack/react-query";
-
+import type { TUpdateCustomerProfile } from "@/services/customer.service";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { TUser } from "@/types/user";
 
-type TProfileForm = {
-  name: string;
-  phone: string;
-  address: string;
-  profileImage: string;
-};
+type TProfileForm = TUpdateCustomerProfile;
 
 interface CustomerProfileFormProps {
   profile: TUser;

@@ -45,31 +45,51 @@ export default function CreateGearForm() {
       return;
     }
 
-    mutate(
-      {
-        ...formData,
+    const payload = {
+      ...formData,
 
-        stock: Number(formData.stock),
+      
+      slug: formData.name
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, "-"),
 
-        availableStock: Number(
-          formData.availableStock || formData.stock
-        ),
+      stock: Number(formData.stock),
 
-        pricePerDay: Number(
-          formData.pricePerDay
-        ),
+      availableStock: Number(
+        formData.availableStock || formData.stock
+      ),
 
-        images: formData.images
-          .split(",")
-          .map((img) => img.trim())
-          .filter(Boolean),
+      pricePerDay: Number(
+        formData.pricePerDay
+      ),
+
+      images: formData.images
+        .split(",")
+        .map((img) => img.trim())
+        .filter(Boolean),
+    };
+
+    console.log("Submitting Payload:", payload);
+
+    mutate(payload, {
+      onSuccess: () => {
+        toast.success(
+          "Gear created successfully."
+        );
+
+        router.push("/provider/gear");
       },
-      {
-        onSuccess: () => {
-          router.push("/provider/gear");
-        },
-      }
-    );
+
+      onError: (error: any) => {
+        console.error(error);
+
+        toast.error(
+          error?.response?.data?.message ||
+            "Failed to create gear."
+        );
+      },
+    });
   };
 
   return (

@@ -26,13 +26,27 @@ export interface TUser {
 
   createdAt: string;
 
-  updatedAt?: string;
+  updatedAt: string;
 }
 
 export interface ICurrentUser {
   id: string;
+
   name: string;
+
   email: string;
+
   role: TUserRole;
+
   status: TUserStatus;
+}
+
+export interface TUpdateProfile {
+  name: string;
+
+  phone: string;
+
+  address: string;
+
+  profileImage: string;
 }

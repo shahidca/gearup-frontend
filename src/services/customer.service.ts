@@ -11,6 +11,13 @@ export type TCustomerRentalQuery = {
   status?: string;
 };
 
+export type TUpdateCustomerProfile = {
+  name: string;
+  phone: string;
+  address: string;
+  profileImage: string;
+};
+
 /* ======================================================
    Dashboard
 ====================================================== */
@@ -19,7 +26,7 @@ export const getCustomerDashboard = async () => {
   const response = await api.get(
     "/customer/dashboard"
   );
-
+  console.log("Dashboard API Response:", response);
   return response.data.data;
 };
 
@@ -89,12 +96,7 @@ export const getCustomerProfile = async () => {
 };
 
 export const updateCustomerProfile = async (
-  payload: {
-    name?: string;
-    phone?: string;
-    address?: string;
-    profileImage?: string;
-  }
+  payload: TUpdateCustomerProfile
 ) => {
   const response = await api.patch(
     "/customer/profile",

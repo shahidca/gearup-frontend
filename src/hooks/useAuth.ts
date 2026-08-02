@@ -1,9 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { toast } from "sonner";
-
+import type { ICurrentUser } from "@/types/user";
 import {
   loginUser,
   registerUser,
@@ -15,6 +20,12 @@ import {
   RegisterPayload,
 } from "@/services/auth.service";
 
+import { getDashboardRoute } from "@/utils/dashboard-redirect";
+
+interface ErrorResponse {
+  message: string;
+}
+
 /* =========================================
    Current User
 ========================================= */
@@ -24,6 +35,7 @@ export function useCurrentUser() {
     queryKey: ["current-user"],
     queryFn: getCurrentUser,
     retry: false,
+    staleTime: 1000 * 60 * 5,
   });
 }
 
@@ -33,25 +45,52 @@ export function useCurrentUser() {
 
 export function useLogin() {
   const router = useRouter();
-  const queryClient = useQueryClient();
+
+  const queryClient =
+    useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: LoginPayload) =>
-      loginUser(payload),
+    mutationFn: (
+      payload: LoginPayload
+    ) => loginUser(payload),
 
-    onSuccess: () => {
-      toast.success("Login successful.");
+    onSuccess: async () => {
+      toast.success(
+        "Login successful."
+      );
 
-      queryClient.invalidateQueries({
-        queryKey: ["current-user"],
+      // Refresh current user cache
+      await queryClient.invalidateQueries({
+        queryKey: [
+          "current-user",
+        ],
       });
+
+      // Fetch latest authenticated user
+      const user =
+        await queryClient.fetchQuery({
+          queryKey: [
+            "current-user",
+          ],
+          queryFn:
+            getCurrentUser,
+        });
+
+      // Redirect based on role
+      router.replace(
+        getDashboardRoute(
+          user.role
+        )
+      );
 
       router.refresh();
     },
 
-    onError: (error: any) => {
+    onError: (
+      error: AxiosError<ErrorResponse>
+    ) => {
       toast.error(
-        error?.response?.data?.message ??
+        error.response?.data?.message ??
           "Login failed."
       );
     },
@@ -66,20 +105,23 @@ export function useRegister() {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: (payload: RegisterPayload) =>
-      registerUser(payload),
+    mutationFn: (
+      payload: RegisterPayload
+    ) => registerUser(payload),
 
     onSuccess: () => {
       toast.success(
-        "Registration successful."
+        "Account created successfully. Please log in."
       );
 
-      router.push("/login");
+      router.replace("/login");
     },
 
-    onError: (error: any) => {
+    onError: (
+      error: AxiosError<ErrorResponse>
+    ) => {
       toast.error(
-        error?.response?.data?.message ??
+        error.response?.data?.message ??
           "Registration failed."
       );
     },
@@ -92,8 +134,9 @@ export function useRegister() {
 
 export function useForgotPassword() {
   return useMutation({
-    mutationFn: (email: string) =>
-      forgotPassword(email),
+    mutationFn: (
+      email: string
+    ) => forgotPassword(email),
 
     onSuccess: () => {
       toast.success(
@@ -101,10 +144,12 @@ export function useForgotPassword() {
       );
     },
 
-    onError: (error: any) => {
+    onError: (
+      error: AxiosError<ErrorResponse>
+    ) => {
       toast.error(
-        error?.response?.data?.message ??
-          "Failed to send email."
+        error.response?.data?.message ??
+          "Failed to send reset email."
       );
     },
   });
@@ -125,19 +170,24 @@ export function useResetPassword() {
       token: string;
       password: string;
     }) =>
-      resetPassword(token, password),
+      resetPassword(
+        token,
+        password
+      ),
 
     onSuccess: () => {
       toast.success(
         "Password reset successfully."
       );
 
-      router.push("/login");
+      router.replace("/login");
     },
 
-    onError: (error: any) => {
+    onError: (
+      error: AxiosError<ErrorResponse>
+    ) => {
       toast.error(
-        error?.response?.data?.message ??
+        error.response?.data?.message ??
           "Password reset failed."
       );
     },
@@ -150,7 +200,9 @@ export function useResetPassword() {
 
 export function useLogout() {
   const router = useRouter();
-  const queryClient = useQueryClient();
+
+  const queryClient =
+    useQueryClient();
 
   return useMutation({
     mutationFn: logoutUser,
@@ -158,14 +210,20 @@ export function useLogout() {
     onSuccess: () => {
       queryClient.clear();
 
-      toast.success("Logged out.");
+      toast.success(
+        "Logged out successfully."
+      );
 
-      router.push("/login");
+      router.replace("/login");
+
+      router.refresh();
     },
 
-    onError: (error: any) => {
+    onError: (
+      error: AxiosError<ErrorResponse>
+    ) => {
       toast.error(
-        error?.response?.data?.message ??
+        error.response?.data?.message ??
           "Logout failed."
       );
     },

@@ -15,8 +15,7 @@ export default function SidebarNav() {
   
 
   const { data: user } = useCurrentUser();
-  console.log("Current User:", user);
-console.log("Current Role:", user?.role);
+
 
   let navigation = customerDashboardNav;
 

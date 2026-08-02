@@ -36,17 +36,15 @@ export default function Navbar() {
       transition={{
         duration: 0.3,
       }}
-      className={`sticky top-0 z-50 w-full border-b backdrop-blur-md transition-all duration-300 ${
-        isScrolled
+      className={`sticky top-0 z-50 w-full border-b backdrop-blur-md transition-all duration-300 ${isScrolled
           ? "border-border bg-background/90 shadow-md"
           : "border-transparent bg-background/60"
-      }`}
+        }`}
     >
       <Container>
         <nav
-          className={`flex items-center justify-between transition-all duration-300 ${
-            isScrolled ? "h-[72px]" : "h-20"
-          }`}
+          className={`flex items-center justify-between transition-all duration-300 ${isScrolled ? "h-[72px]" : "h-20"
+            }`}
         >
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
@@ -68,23 +66,23 @@ export default function Navbar() {
           </div>
 
           {/* Right Side */}
-         <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3">
             <ThemeToggle />
 
-  {/* Desktop Buttons */}
- {/* Desktop Auth Area */}
-{isLoading ? (
-  <div className="hidden md:flex h-10 w-28 animate-pulse rounded-xl bg-muted" />
-) : user ? (
-  <UserMenu />
-) : (
-  <GuestMenu />
-)}
+            {/* Desktop Buttons */}
+            {/* Desktop Auth Area */}
+            {isLoading ? (
+              <div className="hidden md:flex h-10 w-28 animate-pulse rounded-xl bg-muted" />
+            ) : user ? (
+              <UserMenu />
+            ) : (
+              <GuestMenu />
+            )}
 
-  {/* Mobile Menu */}
-  <MobileMenu />
+            {/* Mobile Menu */}
+            <MobileMenu />
 
-</div>
+          </div>
         </nav>
       </Container>
     </motion.header>

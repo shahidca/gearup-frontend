@@ -1,11 +1,12 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import {
   createPayment,
   confirmPayment,
+  getMyPayments,
 } from "@/services/payment.service";
 
 export function useCreatePayment() {
@@ -35,5 +36,12 @@ export function useConfirmPayment() {
           "Payment confirmation failed."
       );
     },
+  });
+}
+
+export function useMyPayments() {
+  return useQuery({
+    queryKey: ["customer-payments"],
+    queryFn: getMyPayments,
   });
 }

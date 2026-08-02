@@ -4,20 +4,25 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useLogin } from "@/hooks/useLogin";
 
 import PasswordInput from "./PasswordInput";
 import SocialLogin from "./SocialLogin";
 
+import { useLogin } from "@/hooks/useAuth";
+
 const loginSchema = z.object({
-  email: z.email("Please enter a valid email address"),
+  email: z
+    .string()
+    .email("Please enter a valid email address"),
+
   password: z
     .string()
-    .min(8, "Password must be at least 8 characters"),
+    .min(6, "Password must be at least 6 characters"),
+
   remember: z.boolean().optional(),
 });
 
@@ -32,6 +37,7 @@ export default function LoginForm() {
     formState: { errors },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
+
     defaultValues: {
       email: "",
       password: "",
@@ -39,30 +45,32 @@ export default function LoginForm() {
     },
   });
 
-const { login, isPending } = useLogin();
+  const loginMutation = useLogin();
 
-const onSubmit = (data: LoginFormValues) => {
-  login({
-    email: data.email,
-    password: data.password,
-  });
-};
+  const onSubmit = (data: LoginFormValues) => {
+    loginMutation.mutate({
+      email: data.email,
+      password: data.password,
+    });
+  };
 
   return (
     <>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-5"
+        className="space-y-6"
       >
         {/* Email */}
+
         <div className="space-y-2">
-          <label className="text-sm font-medium">
+          <label className="text-sm font-semibold">
             Email Address
           </label>
 
           <Input
             type="email"
             placeholder="Enter your email"
+            className="h-12 rounded-xl"
             {...register("email")}
           />
 
@@ -74,13 +82,15 @@ const onSubmit = (data: LoginFormValues) => {
         </div>
 
         {/* Password */}
+
         <div className="space-y-2">
-          <label className="text-sm font-medium">
+          <label className="text-sm font-semibold">
             Password
           </label>
 
           <PasswordInput
             placeholder="Enter your password"
+            className="h-12 rounded-xl"
             {...register("password")}
           />
 
@@ -91,13 +101,17 @@ const onSubmit = (data: LoginFormValues) => {
           )}
         </div>
 
-        {/* Remember Me + Forgot Password */}
+        {/* Remember */}
+
         <div className="flex items-center justify-between">
-          <label className="flex cursor-pointer items-center gap-2 text-sm">
+          <label className="flex cursor-pointer items-center gap-3 text-sm text-muted-foreground">
             <Checkbox
               checked={watch("remember")}
               onCheckedChange={(checked) =>
-                setValue("remember", Boolean(checked))
+                setValue(
+                  "remember",
+                  Boolean(checked)
+                )
               }
             />
 
@@ -106,37 +120,52 @@ const onSubmit = (data: LoginFormValues) => {
 
           <Link
             href="/forgot-password"
-            className="text-sm font-medium text-primary hover:underline"
+            className="text-sm font-medium text-primary transition hover:underline"
           >
             Forgot Password?
           </Link>
         </div>
 
-        {/* Submit Button */}
+        {/* Button */}
+
         <Button
           type="submit"
-          className="h-12 w-full"
-         disabled={isPending}
+          className="mt-2 h-12 w-full rounded-xl text-base font-semibold"
+          disabled={loginMutation.isPending}
         >
-         {isPending ? "Signing In..." : "Sign In"}
+          {loginMutation.isPending
+            ? "Signing In..."
+            : "Sign In"}
         </Button>
 
         {/* Register */}
-        <p className="text-center text-sm text-muted-foreground">
+
+        <div className="pt-2 text-center text-sm text-muted-foreground">
           Don't have an account?{" "}
           <Link
             href="/register"
-            className="font-semibold text-primary hover:underline"
+            className="font-semibold text-primary transition hover:underline"
           >
             Create Account
           </Link>
-        </p>
+        </div>
       </form>
 
-      {/* Social Login */}
-      <div className="mt-8">
-        <SocialLogin />
+      {/* Divider */}
+
+      <div className="my-8 flex items-center gap-4">
+        <div className="h-px flex-1 bg-border" />
+
+        <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          Or continue with
+        </span>
+
+        <div className="h-px flex-1 bg-border" />
       </div>
+
+      {/* Social Login */}
+
+      <SocialLogin />
     </>
   );
 }

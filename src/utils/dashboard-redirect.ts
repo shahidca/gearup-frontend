@@ -7,13 +7,13 @@ export function getDashboardRoute(
   switch(role){
 
     case "ADMIN":
-      return "/admin/dashboard";
+      return "/admin";
 
     case "PROVIDER":
       return "/provider/dashboard";
 
     case "CUSTOMER":
-      return "/dashboard";
+      return "/customer";
 
     default:
       return "/";

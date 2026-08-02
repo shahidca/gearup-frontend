@@ -19,28 +19,12 @@ export interface TReviewGear {
 
 export interface TReview {
   id: string;
-
   rating: number;
-
   comment?: string | null;
-
   customerId: string;
-
   gearItemId: string;
-
   createdAt: string;
-
   updatedAt: string;
-
   customer?: TReviewCustomer;
-
   gearItem?: TReviewGear;
-}
-
-export interface TGearReviewsResponse {
-  averageRating: number;
-
-  totalReviews: number;
-
-  reviews: TReview[];
 }

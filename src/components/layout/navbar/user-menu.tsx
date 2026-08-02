@@ -81,7 +81,7 @@ export default function UserMenu() {
       ? "/admin/profile"
       : user.role === "PROVIDER"
         ? "/provider/profile"
-        : "/profile";
+        : "/customer/profile";
 
 
 

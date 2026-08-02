@@ -149,12 +149,12 @@ export default function CustomerPaymentCard({
 
         {rental && (
           <Link href={`/customer/rentals/${rental.id}`} className="block">
-  <Button className="w-full">
-    View Rental Details
+            <Button className="w-full">
+              View Rental Details
 
-    <ArrowRight className="ml-2 h-4 w-4" />
-  </Button>
-</Link>
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
         )}
 
       </div>

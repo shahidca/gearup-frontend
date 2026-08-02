@@ -77,7 +77,7 @@ export default function ProviderGearPage() {
 
         </div>
 
-        <Link href="/provider/gear/add">
+        <Link href="/provider/gear/create">
 
           <Button>
 

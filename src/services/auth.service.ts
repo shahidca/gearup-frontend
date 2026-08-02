@@ -36,6 +36,20 @@ export const registerUser = async (
   return response.data.data;
 };
 
+/* =========================================
+   Social Login
+========================================= */
+
+export const loginWithGoogle = () => {
+  window.location.href =
+    `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+};
+
+export const loginWithGithub = () => {
+  window.location.href =
+    `${process.env.NEXT_PUBLIC_API_URL}/auth/github`;
+};
+
 export const forgotPassword = async (
   email: string
 ) => {

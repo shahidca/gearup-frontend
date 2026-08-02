@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import type { TGear } from "@/types/gear";
 
 import GearDetailsDialog from "./GearDetailsDialog";
-import EditGearDialog from "../../components/dashboard/provider/gear/EditGearDialog";
-import DeleteGearDialog from "../../components/dashboard/provider/gear/DeleteGearDialog";
+import EditGearDialog from "./EditGearDialog";
+import DeleteGearDialog from "./DeleteGearDialog";
 
 interface GearActionMenuProps {
   gear: TGear;
