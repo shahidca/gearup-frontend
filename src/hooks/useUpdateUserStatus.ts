@@ -5,7 +5,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 
-import { updateUserStatus } from "@/services/admin.service";
+import { updateAdminUserStatus } from "@/services/admin.service";
 
 export function useUpdateUserStatus() {
   const queryClient = useQueryClient();
@@ -17,8 +17,7 @@ export function useUpdateUserStatus() {
     }: {
       id: string;
       status: string;
-    }) =>
-      updateUserStatus(id, status),
+    }) => updateAdminUserStatus(id, status),
 
     onSuccess: () => {
       queryClient.invalidateQueries({

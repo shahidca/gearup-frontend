@@ -25,6 +25,12 @@ export interface TReview {
   gearItemId: string;
   createdAt: string;
   updatedAt: string;
+  
+  // Primary relations
   customer?: TReviewCustomer;
   gearItem?: TReviewGear;
+
+  // Optional aliases to support varied API responses
+  user?: TReviewCustomer;
+  gear?: TReviewGear;
 }

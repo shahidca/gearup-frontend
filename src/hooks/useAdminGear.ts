@@ -118,3 +118,7 @@ export function useDeleteAdminGear() {
     },
   });
 }
+
+// Alias exports to resolve missing member errors in dialog components
+export { useDeleteAdminGear as useDeleteGear };
+export { useUpdateAdminGear as useUpdateGear };

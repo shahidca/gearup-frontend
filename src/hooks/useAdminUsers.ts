@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-query";
 
 import toast from "react-hot-toast";
-
+export { useSingleAdminUser as useSingleUser };
 import {
   getAdminUsers,
   getSingleAdminUser,

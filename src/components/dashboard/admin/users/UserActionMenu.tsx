@@ -11,28 +11,24 @@ interface UserActionMenuProps {
   user: {
     id: string;
     status: string;
+    name?: string;
+    email?: string;
   };
 }
 
 export default function UserActionMenu({
   user,
 }: UserActionMenuProps) {
-  const [detailsOpen, setDetailsOpen] =
-    useState(false);
-
-  const [statusDialogOpen, setStatusDialogOpen] =
-    useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [statusDialogOpen, setStatusDialogOpen] = useState(false);
 
   return (
     <>
       <div className="flex items-center justify-end gap-2">
-
         <Button
           size="sm"
           variant="secondary"
-          onClick={() =>
-            setDetailsOpen(true)
-          }
+          onClick={() => setDetailsOpen(true)}
         >
           View
         </Button>
@@ -40,15 +36,10 @@ export default function UserActionMenu({
         <Button
           size="sm"
           variant="outline"
-          onClick={() =>
-            setStatusDialogOpen(true)
-          }
+          onClick={() => setStatusDialogOpen(true)}
         >
-          {user.status === "ACTIVE"
-            ? "Suspend"
-            : "Activate"}
+          {user.status === "ACTIVE" ? "Suspend" : "Activate"}
         </Button>
-
       </div>
 
       <UserDetailsDialog
@@ -58,7 +49,7 @@ export default function UserActionMenu({
       />
 
       <UserStatusDialog
-        userId={user.id}
+        user={user}
         currentStatus={user.status}
         open={statusDialogOpen}
         onOpenChange={setStatusDialogOpen}

@@ -1,3 +1,3 @@
-export function MyRentalsPage() {
-  <h2>My Rentals</h2>
-  } 
+export default function RentalsPage() {
+  return <div>Rentals Page</div>;
+}
