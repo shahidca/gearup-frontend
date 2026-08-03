@@ -17,90 +17,125 @@ interface ProviderProfileCardProps {
   profile: TUser;
 }
 
+// Robust helper to format, convert, and validate image URLs safely
+const getProfileImage = (imageUrl?: string | null): string => {
+  const fallbackImage = "/images/avatar.png";
+
+  if (!imageUrl || typeof imageUrl !== "string") return fallbackImage;
+
+  let formattedUrl = imageUrl.trim();
+
+  // 1. Check for invalid or placeholder URLs
+  const invalidWebsites = [
+    "www.google.com",
+    "google.com",
+    "http://www.google.com",
+    "https://www.google.com",
+    "example.com",
+  ];
+  if (invalidWebsites.includes(formattedUrl.toLowerCase())) {
+    return fallbackImage;
+  }
+
+  // 2. Fix URLs missing protocol
+  if (
+    !formattedUrl.startsWith("http://") &&
+    !formattedUrl.startsWith("https://") &&
+    !formattedUrl.startsWith("/")
+  ) {
+    formattedUrl = `https://${formattedUrl}`;
+  }
+
+  // 3. Convert Google Drive shareable links to direct view links
+  if (formattedUrl.includes("drive.google.com")) {
+    const fileIdMatch =
+      formattedUrl.match(/\/d\/([^/]+)/) || formattedUrl.match(/id=([^&]+)/);
+    if (fileIdMatch && fileIdMatch[1]) {
+      return `https://drive.google.com/uc?export=view&id=${fileIdMatch[1]}`;
+    }
+  }
+
+  // 4. Verify URL constructability
+  if (
+    formattedUrl.startsWith("http://") ||
+    formattedUrl.startsWith("https://")
+  ) {
+    try {
+      new URL(formattedUrl);
+      return formattedUrl;
+    } catch {
+      return fallbackImage;
+    }
+  }
+
+  return formattedUrl;
+};
+
 export default function ProviderProfileCard({
   profile,
 }: ProviderProfileCardProps) {
-
-
   return (
     <div className="rounded-3xl border bg-card p-8 shadow-sm">
       {/* Avatar */}
-
       <div className="flex flex-col items-center">
         <div className="relative h-32 w-32 overflow-hidden rounded-full border-4 border-primary/20">
           <Image
-            src={
-              profile.profileImage &&
-                !profile.profileImage.includes("drive.google.com")
-                ? profile.profileImage
-                : "/images/avatar.png"
-            }
-            alt={profile.name}
+            src={getProfileImage(profile?.profileImage)}
+            alt={profile?.name || "Provider Profile"}
             fill
             className="object-cover"
           />
         </div>
 
-        <h2 className="mt-5 text-2xl font-bold">
-          {profile.name}
-        </h2>
+        <h2 className="mt-5 text-2xl font-bold">{profile?.name}</h2>
 
-        <p className="text-muted-foreground">
-          {profile.email}
-        </p>
+        <p className="text-muted-foreground">{profile?.email}</p>
 
         <div className="mt-4 flex gap-3">
-          <Badge>
-            {profile.role}
-          </Badge>
+          <Badge>{profile?.role}</Badge>
 
           <Badge
             variant={
-              profile.status === "ACTIVE"
-                ? "default"
-                : "destructive"
+              profile?.status === "ACTIVE" ? "default" : "destructive"
             }
           >
-            {profile.status}
+            {profile?.status}
           </Badge>
         </div>
       </div>
 
       {/* Information */}
-
       <div className="mt-8 space-y-5">
         <InfoRow
           icon={<Mail className="h-5 w-5" />}
           label="Email"
-          value={profile.email}
+          value={profile?.email}
         />
 
         <InfoRow
           icon={<Phone className="h-5 w-5" />}
           label="Phone"
-          value={profile.phone || "Not added"}
+          value={profile?.phone || "Not added"}
         />
 
         <InfoRow
           icon={<MapPin className="h-5 w-5" />}
           label="Address"
-          value={profile.address || "Not added"}
+          value={profile?.address || "Not added"}
         />
 
         <InfoRow
           icon={<ShieldCheck className="h-5 w-5" />}
           label="Role"
-          value={profile.role}
+          value={profile?.role}
         />
 
         <InfoRow
           icon={<CalendarDays className="h-5 w-5" />}
           label="Joined"
           value={
-            profile.createdAt
-              ? new Date(
-                profile.createdAt
-              ).toLocaleDateString()
+            profile?.createdAt
+              ? new Date(profile.createdAt).toLocaleDateString()
               : "-"
           }
         />
@@ -115,25 +150,14 @@ interface InfoRowProps {
   value: React.ReactNode;
 }
 
-function InfoRow({
-  icon,
-  label,
-  value,
-}: InfoRowProps) {
+function InfoRow({ icon, label, value }: InfoRowProps) {
   return (
     <div className="flex items-start gap-3">
-      <div className="mt-1 text-primary">
-        {icon}
-      </div>
+      <div className="mt-1 text-primary">{icon}</div>
 
       <div>
-        <p className="text-sm text-muted-foreground">
-          {label}
-        </p>
-
-        <p className="font-medium">
-          {value}
-        </p>
+        <p className="text-sm text-muted-foreground">{label}</p>
+        <p className="font-medium">{value}</p>
       </div>
     </div>
   );

@@ -119,7 +119,7 @@ export default function LoginForm() {
           </label>
 
           <Link
-            href="/forgot-password"
+            href="/reset-password"
             className="text-sm font-medium text-primary transition hover:underline"
           >
             Forgot Password?

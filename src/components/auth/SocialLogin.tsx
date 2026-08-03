@@ -1,7 +1,10 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
-import { FaGithub } from "react-icons/fa";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner"; 
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -9,13 +12,30 @@ import { Separator } from "@/components/ui/separator";
 import { useSocialAuth } from "@/hooks/useSocialAuth";
 
 export default function SocialLogin() {
-  const { loginWithGoogle, loginWithGithub } =
-    useSocialAuth();
+  const router = useRouter();
+  const { loginWithGoogle } = useSocialAuth();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleGoogleLogin = async () => {
+    try {
+      setIsLoading(true);
+      const user = await loginWithGoogle();
+
+      if (user) {
+        toast.success("Successfully logged in with Google!");
+        router.push("/gear"); 
+      }
+    } catch (error: any) {
+      console.error("Google Login Error:", error);
+      toast.error(error?.message || "Failed to sign in with Google. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
       {/* Divider */}
-
       <div className="flex items-center gap-4">
         <Separator className="flex-1" />
 
@@ -26,27 +46,21 @@ export default function SocialLogin() {
         <Separator className="flex-1" />
       </div>
 
-      {/* Social Buttons */}
-
-      <div className="grid grid-cols-2 gap-4">
+      {/* Google Button */}
+      <div>
         <Button
           type="button"
           variant="outline"
-          onClick={loginWithGoogle}
-          className="h-12 rounded-xl transition-all hover:-translate-y-1 hover:border-primary hover:shadow-lg"
+          onClick={handleGoogleLogin}
+          disabled={isLoading}
+          className="w-full h-12 rounded-xl transition-all hover:-translate-y-1 hover:border-primary hover:shadow-lg disabled:opacity-50"
         >
-          <FcGoogle className="mr-2 h-5 w-5" />
-          Google
-        </Button>
-
-        <Button
-          type="button"
-          variant="outline"
-          onClick={loginWithGithub}
-          className="h-12 rounded-xl transition-all hover:-translate-y-1 hover:border-primary hover:shadow-lg"
-        >
-          <FaGithub className="mr-2 h-5 w-5" />
-          GitHub
+          {isLoading ? (
+            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+          ) : (
+            <FcGoogle className="mr-2 h-5 w-5" />
+          )}
+          {isLoading ? "Signing in..." : "Google"}
         </Button>
       </div>
     </div>
