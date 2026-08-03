@@ -10,7 +10,6 @@ import { useCustomerPayments } from "@/hooks/useCustomer";
 import { TPayment } from "@/types/payment";
 
 
-
 export default function CustomerPaymentsPage() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("ALL");

@@ -6,7 +6,6 @@ import { useSingleAdminUser } from "@/hooks/useAdminUsers";
 import AdminUserDetailsCard from "@/components/dashboard/admin/users/AdminUserDetailsCard";
 import AdminUserActionsCard from "@/components/dashboard/admin/users/AdminUserActionsCard";
 
-
 export default function AdminUserDetailsPage() {
   const params = useParams();
 

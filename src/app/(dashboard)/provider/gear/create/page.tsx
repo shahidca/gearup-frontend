@@ -3,7 +3,6 @@
 import CreateGearForm from "@/components/dashboard/provider/gear/CreateGearForm";
 
 
-
 export default function CreateGearPage() {
   return (
     <main className="space-y-8">

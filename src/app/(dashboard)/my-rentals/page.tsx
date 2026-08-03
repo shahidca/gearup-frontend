@@ -3,7 +3,6 @@
 import RentalSkeleton from "@/components/dashboard/rentals/RentalSkeleton";
 import EmptyRental from "@/components/dashboard/rentals/EmptyRental";
 import RentalCard from "@/components/dashboard/rentals/RentalCard";
-import { useRouter } from "next/navigation";
 import { useMyRentals } from "@/hooks/useMyRentals";
 
 export default function MyRentalsPage() {

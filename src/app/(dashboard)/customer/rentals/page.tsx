@@ -31,14 +31,14 @@ export default function CustomerRentalsPage() {
     isLoading,
     isError,
   } = useCustomerRentals({
-  page,
-  limit: 9,
-  searchTerm,
-  status:
-    status === "ALL"
-      ? undefined
-      : status,
-});
+    page,
+    limit: 9,
+    searchTerm,
+    status:
+      status === "ALL"
+        ? undefined
+        : status,
+  });
 
   if (isLoading && !data) {
     return <CustomerRentalSkeleton />;
